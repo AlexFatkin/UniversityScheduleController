@@ -1,0 +1,161 @@
+@startuml
+autonumber
+skinparam {
+NoteBackgroundColor White
+NoteBQuoterColor Blue
+NoteFontStyle italic
+'ActorBQuoterColor Black
+'EntityBQuoterColor black
+'ControlBQuoterColor black
+'BoundaryBQuoterColor black
+}
+skinparam shadowing false
+skinparam DefaultTextAlignment left
+skinparam sequence {
+ActorBQuoterThickness 2
+}
+actor User #white
+boundary Trader #white
+entity Broker #white
+entity Ticker #white
+control Reducer #white
+control Smoother #white
+control Marker #white
+control Dealer #white
+
+title Создание и уничтожение объектов
+User++
+User -\ Trader** : Load
+User--
+Trader++
+Trader -\ Broker** : *Load
+Broker++
+Trader++
+Trader -\ Ticker** : *Load
+Ticker++
+Trader -\ Reducer** : Load
+Reducer++
+Trader -\ Smoother** : Load
+Smoother++
+Trader -\ Marker** : Load
+Marker++
+Trader -\ Dealer** : Load
+Dealer++
+User -\ Trader : Destroy
+destroy Trader
+destroy Ticker
+destroy Reducer
+destroy Dealer
+destroy Smoother
+destroy Marker
+destroy Dealer
+
+newpage Вызовы функций объектов
+User++
+User->Trader++:set_param()
+Trader--
+User->Trader++:Run()
+User--
+Trader ->Broker++:set()
+Broker--
+Trader ->Ticker++ :next_tick()
+Trader--
+Trader ->Reducer++ :reduce()
+Ticker--
+Trader ->Smoother++ :smooth()
+Reducer--
+Trader ->Marker++ :mark()
+Smoother--
+Trader ->Dealer++ :deal()
+Marker--
+User++
+User->Trader : stop()
+User--
+@enduml
+
+@startuml
+autonumber
+skinparam {
+NoteBackgroundColor White
+NoteBQuoterColor Blue
+NoteFontStyle italic
+'ActorBQuoterColor Black
+'EntityBQuoterColor black
+'ControlBQuoterColor black
+'BoundaryBQuoterColor black
+}
+skinparam shadowing false
+skinparam DefaultTextAlignment left
+skinparam sequence {
+ActorBQuoterThickness 2
+}
+actor User #white
+boundary Broker #white
+entity Ticker #white
+control Reducer #white
+control Smoother #white
+control Marker #white
+entity Dealer #white
+
+title Создание объектов
+User++
+User -\ Broker** : Load
+Broker++
+Broker -\ Ticker** : *Load
+Broker--
+Ticker++
+Ticker -\ Reducer** : Load
+Ticker--
+Reducer++
+Reducer -\ Smoother** : Load
+Reducer--
+Smoother++
+Smoother -\ Marker** : Load
+Smoother--
+Marker++
+Marker -\ Dealer** : Load
+Marker--
+Dealer--
+
+newpage Вызовы функций объектов
+User->Broker++:set_param()
+Broker--
+User-\Broker++:Run()
+User--
+Broker -\Ticker++ :next_tick()
+Broker--
+Ticker -\Reducer++ :reduce()
+Ticker--
+Reducer -\Smoother++ :smooth()
+Reducer--
+Smoother -\Marker++ :mark()
+Smoother--
+Marker -\Dealer++ :deal()
+Marker--
+'User++
+'User-\Broker : stop()
+'User--
+destroy Broker
+destroy Ticker
+destroy Reducer
+destroy Dealer
+destroy Smoother
+destroy Marker
+destroy Dealer
+@enduml
+
+@startuml
+'participant User
+User -> A: DoWork
+activate A
+A -> B: << createRequest >>
+activate B
+B -> C: DoWork
+activate C
+C --> B: WorkDone
+destroy C
+B --> A: RequestCreated
+deactivate B
+A -> User: Done
+deactivate A
+@enduml

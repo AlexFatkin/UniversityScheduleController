@@ -1,0 +1,36 @@
+@startuml
+title Плавательная дорожка Trading12_8
+hide circle
+'hide members
+scale 1.3
+skinparam DefaultTextAlignment left
+skinparam shadowing false
+'skinparam monochrome true
+skinparam ConditionEndStyle hline
+
+|SwPer|
+start
+if (can_real) is (False) then
+repeat
+:**change_period()**;
+:next_tick();
+repeat while (<b>end?\n No\n Yes)
+else (True)
+:**median_profit()**;
+:transact();
+|RdSmer|
+fork
+:can_real;
+
+fork again
+:do_real;
+|RdSmer|
+end fork
+:transact();
+|Dealer|
+:real_deal();
+endif
+|SwPer|
+:show_result();
+'stop
+@enduml

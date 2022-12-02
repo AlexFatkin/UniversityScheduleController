@@ -1,0 +1,30 @@
+@startuml
+note "release 2" as N2
+note "release 2" as N4
+note "release 3" as N3
+note "release 3" as N6
+
+package "Trading" {
+[Handler]<--[Tester]
+[Interface] -d(0-[Loader]
+[Loader] -d(0-[Provider]
+[Provider] -d(0-[Handler]
+}
+[python]<|-[Handler]
+[Tester]-|>[pytest]
+[Interface].l.N6
+[Interface] -|>[tkinter]
+[Loader] -|>[ZODB]
+[Loader]-l-N4
+[Provider] -l0)-   [Files]
+cloud   "Finam" {
+[Provider] -r(0-  [History]
+}
+[History].N2
+cloud   "Quote"{
+[Provider] -d(0-  [Lua]
+}
+[Lua] . N3
+'[Provider].l.N7
+@enduml
+

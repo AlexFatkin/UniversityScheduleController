@@ -1,0 +1,36 @@
+@startuml
+'PlantUML modul
+left to right direction
+skinparam packageStyle rectangle
+skinparam {
+shadowing false
+ActorBackgroundColor White
+ActorBorderColor Black
+}
+skinparam usecase {
+BackgroundColor White
+BorderColor Black
+ArrowColor Black
+}
+actor Препод
+actor Эксперт
+actor Разработчик
+actor Студент
+'Main Limitation
+rectangle "Варианты использования" {
+    Препод - (Планирование учебного процесса)
+    Студент - (Планирование учебного процесса)
+    Эксперт - (Планирование учебного процесса)
+'    (Экспертиза) .> (Планирование учебного процесса) : include
+    (Сопровождение) -- Эксперт
+    (Экспертиза) -- Эксперт
+    (Реализация) -- Разработчик
+    (Проектирование ) -- Разработчик
+    Студент -- (Целеполагание)
+    Препод -- (Целеполагание)
+    Разработчик -- (Целеполагание)
+}
+@enduml
+
+
+

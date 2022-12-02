@@ -1,0 +1,23 @@
+@startuml
+title Handler state
+skinparam {
+NoteBackgroundColor White
+NoteBorderColor Blue
+NoteFontStyle italic
+StateBackgroundColor White
+}
+skinparam shadowing false
+[*]--> Mark  : /first_tick
+Mark : extremum ?
+Mark --> deal_begin
+Mark --> Mark : [No] /next_tick
+deal_begin -> deal_end
+deal_end  -> deal_begin
+deal_end -> profit
+Mark --> deal_end
+profit -u-> handler_type
+profit : positive \nnegative
+handler_type : real=true \nreal=false
+deposit : real=true
+handler_type -u-> deposit
+@enduml

@@ -1,0 +1,72 @@
+@startsalt
+{{^"<b><color:blue>Interface"
+{[load]|[run]|[delete]|^virtual^|^SBER^|Sm|^14^|Rd|^13^|beg|^19/03/27^|end|^19/03/29^|<b><color:blue><size:30><&media-play>|<size:30><&media-skip-backward>|<b><color:blue><size:30><&media-stop>|<size:30><&media-skip-forward>|[save]|[exit]
+}}
+{
+{^"<b><color:blue>Quotes" {#
+date |time |close
+<back:orange><b>2019-03-29|19:00|112.9
+2019-03-29|18:00|113.0
+2019-03-29|17:00|112.8
+2019-03-29|16:00|112.9
+2019-03-29|15:00|113.0
+2019-03-29|14:00|112.8
+2019-03-29|13:00|112.9
+2019-03-29|12:00|113.0
+2019-03-29|11:00|112.8
+2019-03-28|19:00|112.9
+2019-03-28|18:00|113.0
+2019-03-28|17:00|112.8
+2019-03-28|16:00|112.9
+2019-03-28|15:00|113.0
+2019-03-28|14:00|112.8
+2019-03-28|13:00|112.9
+2019-03-28|12:00|113.0
+2019-03-28|11:00|112.8
+<back:PaleGreen><b>2019-03-27|19:00|112.9
+2019-03-27|18:00|113.0
+2019-03-27|17:00|112.8
+2019-03-27|16:00|112.9
+}}|..{^"<b><color:blue>Spreads"{#
+ask |price |bid
+.|114.8|1250
+.|114.4|388
+.|114.2|445
+.|114.0|1255
+.|113.9|1201
+.|113.8|325
+.|113.7|487
+.|113.5|152
+.|113.4|1301
+.|113.3|<back:orange><b>120
+.|113.1|<back:orange><b>90
+88|113.0|.
+50|112.9|.
+150|112.7|.
+502|112.6|.
+203|112.5|.
+158|112.4|.
+221|112.3|.
+1204|112.2.
+221|112.2|.
+587|112.0|.
+2258|111.9|.
+}}|..{^"<b><color:blue>All Deals" {{#
+type|state|ticker|Sm|Rd|date|time|type|input|output|profit|deposit| deals | lot
+<back:Cyan><b><color:black>virtue|open|SBER|7|4|2019-03-29|19:00|short| 0|25|-25|975| 122| 26
+<back:Gold><b><color:black>real|open|SBER|9|4|2019-03-29|11:00|long|32|20|12|1012| 103| 26
+<back:Cyan><b><color:black>virtue|close|GAZP|7|4|2019-03-29|11:00|short| 22|22|0|1000| 144| 31
+<back:Gold><b><color:black>real|open|GAZP|9|4|2019-03-29|11:00|long|25|20|5|1005| 112| 31
+}}
+|{^"<b><color:blue>Deals: SBER,virtue,Sm=13,Rd=13"
+{#
+date|time|state|type|price| input|lot|days|output|profit|deposit|part|deals
+2019-03-29|19:00|open|short|112.9|25|26|2|-20|5| 975|0.975|122
+2019-03-27|19:00|close|long|118.5|20|25|0|-12|8|1000| 1.000|121
+}}
+|
+ {<img:Sber_part.png>|<img:SBER_part_price.png>
+ }}
+}
+}
+@endsalt
