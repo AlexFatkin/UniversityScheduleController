@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/University-Schedule-Planner.iml" filepath="$PROJECT_DIR$/.idea/University-Schedule-Planner.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/UniversityScheduleController.iml" filepath="$PROJECT_DIR$/.idea/UniversityScheduleController.iml" />
     </modules>
   </component>
 </project>
