@@ -17,7 +17,7 @@ global_student_id = 0  # Глобальная для всего модуля п�
 
 def excel_export(df_restructured, table_name, sheet_name):
     """Экспортируем датафрейм в таблицу excel """
-    df_restructured.to_excel(table_name, sheet_name=sheet_name)
+    df_restructured.to_excel(table_name, sheet_name=sheet_name)   # Экспортируем датафрейм в таблицу Excel
 
 
 def excel_import(table_name: str, sheet_name: str):

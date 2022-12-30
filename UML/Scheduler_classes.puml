@@ -56,7 +56,7 @@ workload
 e-mail
 }
 class Discipline{
-idid
+id
 workload
 }
 class Pair {
