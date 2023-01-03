@@ -4,6 +4,7 @@
 @time: 20.12.2022 11:34
 Модуль отвечает за предупреждения и ошибки при составлении расписания
 6. Добавлен экспорт в таблицу Excel и импорт из нее в DataFrame
+7. Конвертация из DataFrame в класс  Scheduler
 UML схемы: Scheduler_classes.puml, Scheduler_usecase.puml
 Сценарий работы модуля:Scheduler_scenario.docx
 Тест модуля находится в папке tests.
@@ -139,7 +140,7 @@ class Schedule:
         return schedule_df
 
     def data_frame_to_schedule_object(self, data_frame: pd.DataFrame):
-        """Создаем объект расписание из датафрейма"""
+        """Конвертация из DataFrame в класс  Scheduler"""
         return data_frame
 
     def alerts_handling(self):
