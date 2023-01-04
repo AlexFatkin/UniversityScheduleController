@@ -21,12 +21,12 @@ skinparam packageStyle frame
 
 package Helper {
 class Error{
-name
-number
+type
+lesson
 }
 class Alert{
-name
-number
+type
+lesson
 }
 
 class Expert{
@@ -43,11 +43,13 @@ term
 load()
 }
 class Lesson{
-id
+number
 type
-face-to-face
-week
-day
+'face-to-face
+begin
+finish
+'week
+'day
 load()
 }
 class Teacher{
@@ -64,10 +66,10 @@ id
 begin
 ending
 }
-class Student{
-id
-e-mail
-}
+'class Student{
+'id
+'e-mail
+'}
 class Group{
 id
 }
@@ -77,23 +79,23 @@ name
 class Auditorium {
 name
 }
-class Transfer {
-route
-time
-}
+'class Transfer {
+'route
+'time
+'}
 Expert -"*" Schedule
-Alert -- Schedule
+Alert "*"-- Lesson
 Lesson --Teacher
-Schedule -- Error
 Group "*"-- Lesson
 Schedule -"*" Lesson
-Building "2"-"1" Transfer
+Lesson --"*" Error
 Lesson -- Discipline
-Group -"*" Student
-Lesson --Transfer
 Pair "*"-- Lesson
-Building --"*" Auditorium
+Building -- Auditorium
 Lesson - Auditorium
+'Building "2"-"1" Transfer
+'Group -"*" Student
+'Lesson --Transfer
 @enduml
 
 Смысл терминов:
@@ -109,7 +111,7 @@ Student - Студент
 Building  - Корпус
 Auditorium - Аудитория
 Transfer  - Трансфер
-   route – маршрут
+Route – маршрут
 Discipline - Дисциплина
 Teacher - Преподаватель
 Expert - Эксперт
