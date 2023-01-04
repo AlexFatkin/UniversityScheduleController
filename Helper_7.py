@@ -4,7 +4,7 @@
 @time: 20.12.2022 11:34
 Модуль отвечает за предупреждения и ошибки при составлении расписания
 6. Добавлен экспорт в таблицу Excel и импорт из нее в DataFrame
-7. Конвертация из DataFrame в класс  Scheduler
+7. Конвертация из DataFrame в класс Schedule
 UML схемы: Scheduler_classes.puml, Scheduler_usecase.puml
 Сценарий работы модуля:Scheduler_scenario.docx
 Тест модуля находится в папке tests.
@@ -121,9 +121,10 @@ class Schedule:
             self.teachers.append(les.teacher)
             self.buildings.append(les.building)
             self.audiences.append(les.auditorium)
-        self.schedule = {'group': self.groups, 'week': self.weeks, 'day': self.days, 'pair': self.pairs,
-                         'type': self.lessons_types,
-                         'lesson': self.lessons_numbers, 'discipline': self.disciplines, "teacher": self.teachers,
+        self.schedule = {'group': self.groups,
+                         'week': self.weeks, 'day': self.days, 'pair': self.pairs,
+                         'lesson': self.lessons_numbers, 'type': self.lessons_types,
+                         'discipline': self.disciplines, "teacher": self.teachers,
                          'building': self.buildings, 'auditory': self.audiences,
                          }  # Создаем словарь расписания
         self.schedule_df = pd.DataFrame(self.schedule)  # Словарь конвертируем в датафрейм расписания
@@ -132,10 +133,10 @@ class Schedule:
 
     def load_df(self):
         """Извлекаем данные Excel таблицы из и сохраняем в датафрейм"""
-        table_name = 'Расписание №2 без ошибок'
+        table_name = 'Расписание №3 с ошибкой'
         self.file_path = f'input/{table_name}.xlsx'
         schedule_df = load_from_excel(self.file_path, 'sheet_1')
-        print('schedule_df from excel tabl')
+        print(table_name)
         print(schedule_df)
         return schedule_df
 
@@ -351,12 +352,12 @@ if __name__ == '__main__':
     expert.load_schedules(1)  # Эксперт загружает один вариант расписания
     for schedule in expert.schedules:  # Для каждого расписания выводим
         schedule.create_objects()  # Создаем связанные с родителем дочерние объекты
-        print(schedule)  # его номер и число занятий
-        for lesson in schedule.lessons:  # Для каждого занятия выводим
-            print(lesson)  # Объекты занятия (см. переопределение печати)
-    for schedule in expert.schedules:  # Для каждого расписания выводим
-        print(f'    Предупреждения по расписанию №{schedule.id}')
-        schedule.alerts_handling()  # Проверяем расписание на предупреждения
+        # print(schedule)  # его номер и число занятий
+        # for lesson in schedule.lessons:  # Для каждого занятия выводим
+        #     print(lesson)  # Объекты занятия (см. переопределение печати)
+    # for schedule in expert.schedules:  # Для каждого расписания выводим
+    #     print(f'    Предупреждения по расписанию №{schedule.id}')
+    #     schedule.alerts_handling()  # Проверяем расписание на предупреждения
     for schedule in expert.schedules:
         # schedule.create_df()
         schedule.load_df()

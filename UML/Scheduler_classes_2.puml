@@ -1,0 +1,122 @@
+PlantUML
+@startuml
+title Scheduler Domain
+skinparam class {
+BackgroundColor White
+ArrowColor Black
+BorderColor Black
+}
+skinparam object {
+BackgroundColor White
+ArrowColor Black
+BorderColor Black
+}
+hide circle
+'hide members
+scale 1.3
+skinparam DefaultTextAlignment left
+skinparam shadowing false
+'skinparam monochrome true
+skinparam packageStyle frame
+
+package Helper {
+class Error{
+name
+number
+}
+class Alert{
+name
+number
+}
+
+class Expert{
+id
+load()
+handling()
+save()
+publish()
+}
+class Schedule{
+id
+year
+term
+load()
+}
+class Lesson{
+id
+type
+face-to-face
+week
+day
+load()
+}
+class Teacher{
+id
+workload
+e-mail
+}
+class Discipline{
+id
+workload
+}
+class Pair {
+id
+begin
+ending
+}
+class Student{
+id
+e-mail
+}
+class Group{
+id
+}
+class Building {
+name
+}
+class Auditorium {
+name
+}
+class Transfer {
+route
+time
+}
+Expert -"*" Schedule
+Alert -- Schedule
+Lesson --Teacher
+Schedule -- Error
+Group "*"-- Lesson
+Schedule -"*" Lesson
+Building "2"-"1" Transfer
+Lesson -- Discipline
+Group -"*" Student
+Lesson --Transfer
+Pair "*"-- Lesson
+Building --"*" Auditorium
+Lesson - Auditorium
+@enduml
+
+Смысл терминов:
+Alert - Предупреждение
+Error – Ошибка
+Schedule - Расписание
+   term - семестр
+Lesson – Занятие
+   face-to -face - очное
+Pair -  Пара
+Group - Группа
+Student - Студент
+Building  - Корпус
+Auditorium - Аудитория
+Transfer  - Трансфер
+   route – маршрут
+Discipline - Дисциплина
+Teacher - Преподаватель
+Expert - Эксперт
+    handling - обработка
+
+
+
+
+
+
