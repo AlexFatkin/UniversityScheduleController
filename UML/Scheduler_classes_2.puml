@@ -64,7 +64,7 @@ workload
 class Pair {
 id
 begin
-ending
+finish
 }
 'class Student{
 'id
@@ -73,26 +73,27 @@ ending
 class Group{
 id
 }
-class Building {
-name
-}
+'class Building {
+'name
+'}
 class Auditorium {
 name
+building
 }
 'class Transfer {
 'route
 'time
 '}
 Expert -"*" Schedule
+Schedule -"*" Lesson
 Alert "*"-- Lesson
 Lesson --Teacher
 Group "*"-- Lesson
-Schedule -"*" Lesson
 Lesson --"*" Error
 Lesson -- Discipline
 Pair "*"-- Lesson
-Building -- Auditorium
 Lesson - Auditorium
+'Building -- Auditorium
 'Building "2"-"1" Transfer
 'Group -"*" Student
 'Lesson --Transfer
