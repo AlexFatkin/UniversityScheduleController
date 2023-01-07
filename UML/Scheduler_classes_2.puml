@@ -19,31 +19,32 @@ skinparam shadowing false
 'skinparam monochrome true
 skinparam packageStyle frame
 
-package Helper {
+package Handler {
 class Error{
-type
+name
 lesson
 }
 class Alert{
-type
+name
 lesson
 }
 
 class Expert{
-id
+name
 load()
 handling()
 save()
 publish()
 }
 class Schedule{
-id
+name
 year
 term
+week_1_date
 load()
 }
 class Lesson{
-number
+name
 type
 'face-to-face
 begin
@@ -53,16 +54,15 @@ finish
 load()
 }
 class Teacher{
-id
-workload
+name
 e-mail
 }
 class Discipline{
-id
+name
 workload
 }
 class Pair {
-id
+date
 begin
 finish
 }
@@ -71,14 +71,15 @@ finish
 'e-mail
 '}
 class Group{
-id
+name
+students
 }
 'class Building {
 'name
 '}
 class Auditorium {
 name
-building
+address
 }
 'class Transfer {
 'route
@@ -100,12 +101,13 @@ Lesson - Auditorium
 @enduml
 
 Смысл терминов:
+workload - нагрузка
 Alert - Предупреждение
 Error – Ошибка
 Schedule - Расписание
    term - семестр
 Lesson – Занятие
-   face-to -face - очное
+   face-to-face - очное
 Pair -  Пара
 Group - Группа
 Student - Студент
@@ -117,7 +119,7 @@ Discipline - Дисциплина
 Teacher - Преподаватель
 Expert - Эксперт
     handling - обработка
-
+Route – маршрут
 
 
 

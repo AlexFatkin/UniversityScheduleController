@@ -1,12 +1,11 @@
 """
 @author: lataf 
-@file: Helper.py 
-@time: 20.12.2022 11:34
+@file: Helper_7.py
+@time: 06.01.2023 17:59
 Модуль отвечает за предупреждения и ошибки при составлении расписания
-6. Добавлен экспорт в таблицу Excel и импорт из нее в DataFrame
-7. Конвертация из DataFrame в класс Schedule
-UML схемы: Scheduler_classes.puml, Scheduler_usecase.puml
-Сценарий работы модуля:Scheduler_scenario.docx
+8. Построчная обработка расписания из формы в Excel
+UML схемы: Scheduler_classes_2.puml, Scheduler_usecase.puml
+Сценарий работы модуля:Scheduler_scenario_2.docx
 Тест модуля находится в папке tests.
 
 """
@@ -36,9 +35,15 @@ class Expert:
         self.schedules_number = 1  # Число вариантов расписания
         self.lessons_number = 3  # Номеров занятий в расписании ( Лекция и семинар могут иметь один номер)
         self.schedules = []  # Набор расписаний
+        self.pair_df = pd.DataFrame
 
     def __repr__(self):
         return f'Расписание {self.schedules_number}'
+
+    def load_pair(self):
+        """Загружаем значения пар"""
+        self.pair_df = load_from_excel(f'input/Пары.xlsx', 'Лист1')
+        print(self.pair_df)
 
     def load_schedules(self, schedules_number=1):
         """Сбор данных"""
@@ -59,6 +64,11 @@ class Expert:
     def publish(self):
         """Публикация"""
         pass
+
+
+def data_frame_to_schedule_object(data_frame: pd.DataFrame):
+    """Конвертация из DataFrame в класс  Scheduler"""
+    return data_frame
 
 
 class Schedule:
@@ -139,10 +149,6 @@ class Schedule:
         print(table_name)
         print(schedule_df)
         return schedule_df
-
-    def data_frame_to_schedule_object(self, data_frame: pd.DataFrame):
-        """Конвертация из DataFrame в класс  Scheduler"""
-        return data_frame
 
     def alerts_handling(self):
         """"Обработка предупреждений"""
@@ -349,6 +355,7 @@ class Building:
 
 if __name__ == '__main__':
     expert = Expert()  # Создаем эксперта по расписанию и одно расписание
+    expert.load_pair()
     expert.load_schedules(1)  # Эксперт загружает один вариант расписания
     for schedule in expert.schedules:  # Для каждого расписания выводим
         schedule.create_objects()  # Создаем связанные с родителем дочерние объекты
