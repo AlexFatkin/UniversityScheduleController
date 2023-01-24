@@ -20,13 +20,12 @@ skinparam shadowing false
 skinparam packageStyle frame
 
 package Handler {
-class Error{
+
+class UndesirableEffect{
 name
-lesson
-}
-class Alarm{
-name
-lesson
+type
+[les_1, les_2]
+handle()
 }
 
 class Expert{
@@ -89,13 +88,12 @@ address
 '}
 Expert -"*" Schedule
 Schedule -"*" Lesson
-Alarm "*"-- Lesson
-Lesson --"*" Group
+UndesirableEffect "*"--Schedule
+Group "*"-- Lesson
 Lesson --Teacher
-Error "*"-- Lesson
 Lesson -- Discipline
 'Pair "*"-- Schedule
-Lesson - Auditorium
+Auditorium  --  Lesson
 'Building -- Auditorium
 'Building "2"-"1" Transfer
 'Group -"*" Student
@@ -104,7 +102,7 @@ Lesson - Auditorium
 
 Смысл терминов:
 workload - нагрузка
-Alarm - Предупреждение
+UndesirableEffect - Предупреждение
 Error – Ошибка
 Schedule - Расписание
    term - семестр

@@ -1,22 +1,31 @@
 """
 @author: lataf 
-@file: Helper.py 
-@time: 20.12.2022 11:34
+@file: Helper_7.py
+@time: 24.01.2023 17:59
 Модуль отвечает за предупреждения и ошибки при составлении расписания
-6. Добавлен экспорт в таблицу Excel и импорт из нее в DataFrame
-7. Конвертация из DataFrame в класс Schedule
-UML схемы: Scheduler_classes.puml, Scheduler_usecase.puml
-Сценарий работы модуля:Scheduler_scenario.docx
+9. Буду строить Фабричный метод для Undesirable Effect (UE)
+UML схемы: Scheduler_classes_2.puml, Scheduler_usecase.puml
+Сценарий работы модуля:Scheduler_scenario_2.docx
 Тест модуля находится в папке tests.
 
 """
 from dataclasses import dataclass
 import pandas as pd
+from abc import ABC, abstractmethod
 
 global_student_id = 0  # Глобальная для всего модуля переменная - код студента
-pd.set_option('display.max_rows', 1000)  # Число строк в DataFrame
+pd.set_option('display.max_rows', 1000)
 pd.set_option('display.max_columns', 200)
 pd.set_option('display.width', 1000)
+pd.options.mode.chained_assignment = None  # Избегаем предупреждения
+
+
+class UndesirableEffect(ABC):
+    def __init__(self, name: str):
+        self._name = name
+
+    @abstractmethod
+    def create(self): pass
 
 
 def save_in_excel(df_restructured, table_name, sheet_name):
@@ -36,9 +45,15 @@ class Expert:
         self.schedules_number = 1  # Число вариантов расписания
         self.lessons_number = 3  # Номеров занятий в расписании ( Лекция и семинар могут иметь один номер)
         self.schedules = []  # Набор расписаний
+        self.pair_df = pd.DataFrame
 
     def __repr__(self):
         return f'Расписание {self.schedules_number}'
+
+    def load_pair(self):
+        """Загружаем значения пар"""
+        self.pair_df = load_from_excel(f'input/Пары.xlsx', 'Лист1')
+        print(self.pair_df)
 
     def load_schedules(self, schedules_number=1):
         """Сбор данных"""
@@ -61,6 +76,11 @@ class Expert:
         pass
 
 
+def data_frame_to_schedule_object(data_frame: pd.DataFrame):
+    """Конвертация из DataFrame в класс  Scheduler"""
+    return data_frame
+
+
 class Schedule:
     """Расписание - загрузка объектов в расписание"""
 
@@ -80,6 +100,7 @@ class Schedule:
         self.audiences = []
         self.schedule_df = pd.DataFrame(columns=['group', 'week', 'day', 'pair', 'lesson', 'discipline',
                                                  'teacher', 'building', 'auditory'])
+        self.pair = None  # Объект Пары
         self.alert = None  # Предупреждение
         self.id = id  # Номер расписания
         self.name = 'без ошибок'
@@ -95,8 +116,8 @@ class Schedule:
 
     def create_objects(self):
         """Создает набор объектов Trader"""
-        self.alert = Alert()  # Создаем дочерний объект Предупреждение
-        self.alert.schedule = self  # Ссылаемся в нем на родителя Расписание
+        self.alert = Alarm()  # Создаем дочерний объект Предупреждение
+        self.alert.schedule = self  # Ссылаемся в нем на родителя - Расписание
 
     def load(self):
         """Загружает набор объектов - смотри Scheduler_classes.puml"""
@@ -106,6 +127,7 @@ class Schedule:
                                        Auditorium(1), Pair(n)))  # добавляем лекцию, а затем
             self.lessons.append(Lesson(Lesson.seminar, n, Discipline(n), 1, n + 1, Teacher(n), Group(n), Building(n),
                                        Auditorium(2), Pair(n + 1)))  # добавляем семинар
+
     #
     # def create_df(self):
     #     """Извлекаем данные из занятий датафрейм и сохраняем в Excel таблицу """
@@ -135,14 +157,10 @@ class Schedule:
         """Извлекаем данные Excel таблицы из и сохраняем в датафрейм"""
         table_name = 'Расписание №1 Form'
         self.file_path = f'input/{table_name}.xlsx'
-        schedule_df = load_from_excel(self.file_path, 'form')
+        self.schedule_df = load_from_excel(self.file_path, 'form')
         print(table_name)
-        print(schedule_df)
-        return schedule_df
-
-    def data_frame_to_schedule_object(self, data_frame: pd.DataFrame):
-        """Конвертация из DataFrame в класс  Scheduler"""
-        return data_frame
+        print(self.schedule_df)
+        return self.schedule_df
 
     def alerts_handling(self):
         """"Обработка предупреждений"""
@@ -175,7 +193,7 @@ class Lesson:
                f'{self.building},{self.auditorium} Неделя {self.week} День {self.day} {self.pair} '
 
 
-class Alert:
+class Alarm:
     """Предупреждение - проверка расписания на предупреждения"""
 
     def __init__(self):
@@ -244,9 +262,15 @@ class Pair:
 
     def __init__(self, id: int = 1):  # Код пары
         self.id = id
+        self.pair_df = None
 
     def __repr__(self):
         return f'Пара {self.id}'
+
+    def load_pair(self):
+        """Загружаем значения пар"""
+        self.pair_df = load_from_excel(f'input/Пары.xlsx', 'Лист1')
+        print(self.pair_df)
 
 
 class Student:
@@ -296,59 +320,11 @@ class Building:
 
     def __repr__(self):
         return f'Корпус {self.id}'
-#
-#
-# class Transfer:
-#     """Трансфер"""
-#     route = ''
-#     time = ''
-
-
-# class Resource:
-#     """Ресурсы"""
-#
-#     def __init__(self):
-#         self.lessons = []  # Набор занятий
-#         self.teachers = pd.DataFrame(columns=['name', 'e_mail'])
-#         self.groups = pd.DataFrame(columns=['name'])
-#         self.students = pd.DataFrame(columns=['group', 'name', 'e_mail'])
-#         self.buildings = pd.DataFrame(columns=['name'])
-#         self.auditoriums = pd.DataFrame(columns=['building', 'name'])
-#
-#     def create_data_frames(self):
-#         """Создает набор объектов Resurce"""
-#         for teacher_id in range(1, 7):
-#             teacher: pd.Series = pd.Series({'name': f'Преподаватель {teacher_id}',
-#                                             'e_mail': f' teacher_{teacher_id}@university.com'})
-#             self.teachers = pd.concat([self.teachers, teacher.to_frame().T], ignore_index=True)
-#         print(self.teachers)
-#         for group_id in range(1, 7):
-#             group = pd.Series({'name': f'Группа {group_id}'})
-#             self.groups = pd.concat([self.groups, group.to_frame().T], ignore_index=True)
-#         print(self.groups)
-#         for group_id in range(len(self.groups)):  # В каждой группе
-#             for student_id_in_group in range(1, 11):  # создаем 10 студентов
-#                 student_id = int(str(group_id) + str(student_id_in_group - 1)) + 1  # Создаем id студента
-#                 student = pd.Series({'group': self.groups['name'][group_id],  # Создаем строку данных студента
-#                                      'name': f'Студент {student_id}',
-#                                      'e_mail': f' student_{student_id}@university.com'})
-#                 self.students = pd.concat([self.students, student.to_frame().T], ignore_index=True)  # Сохраняем
-#         print(self.students)  # Выводим на экран
-#         for building_id in range(1, 4):
-#             building = pd.Series({'name': f'Корпус {building_id}'})
-#             self.buildings = pd.concat([self.buildings, building.to_frame().T], ignore_index=True)
-#         print(self.buildings)
-#         for building_id in range(len(self.buildings)):
-#             for auditorium_id in range(1, 7):
-#                 # auditorium = int(str(building) + str(auditoriums_in_building - 1)) + 1
-#                 auditorium = pd.Series({'building': self.buildings['name'][building_id],
-#                                         'name': f'Аудитория {auditorium_id}'})
-#                 self.auditoriums = pd.concat([self.auditoriums, auditorium.to_frame().T], ignore_index=True)
-#         print(self.auditoriums)
 
 
 if __name__ == '__main__':
     expert = Expert()  # Создаем эксперта по расписанию и одно расписание
+    # expert.load_pair()
     expert.load_schedules(1)  # Эксперт загружает один вариант расписания
     for schedule in expert.schedules:  # Для каждого расписания выводим
         schedule.create_objects()  # Создаем связанные с родителем дочерние объекты
@@ -359,5 +335,13 @@ if __name__ == '__main__':
     #     print(f'    Предупреждения по расписанию №{schedule.id}')
     #     schedule.alerts_handling()  # Проверяем расписание на предупреждения
     for schedule in expert.schedules:
-        # schedule.create_df()
-        schedule.load_df()
+        schedule_df = schedule.load_df()
+        df = pd.DataFrame()
+        for i in range(0, len(schedule_df)):
+            s = schedule_df.iloc[i]
+            for j in s['week'].split(sep=','):
+                s['week'] = j
+                df = pd.concat([df, s.to_frame().T])
+        print()
+        print('Развернутая свертка')
+        print(df)
