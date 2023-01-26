@@ -324,6 +324,6 @@ class Group:
 
 if __name__ == '__main__':
     expert = Expert()  # Создаем Эксперта
-    expert.load(file_path='input/', table_name='Расписание №2 Form')  # Эксперт загружает свернутую форму расписания
+    expert.load(file_path='input/', table_name='Расписание №1 Form')  # Эксперт загружает свернутую форму расписания
     expert.schedule.create_ue_objects()  # и список объектов НЯ
     expert.handling()  # Эксперт запускает обработку распакованного расписания объектами НЯ
