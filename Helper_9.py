@@ -26,6 +26,7 @@ class UndesirableEffect(ABC):
         self._kind = kind
         self._lessons = []
         self.schedule = None
+        self.ue_count = 0
 
     @abstractmethod
     def find(self): pass
@@ -43,7 +44,6 @@ class SeminarBeforeLecture(UndesirableEffect):
     def seminar_befor_lecture(self):
         """"Семинар проводится до лекции"""
         last_seminar_number = 0
-        ue_count = 0
         for les in self.schedule.lessons:  # Для всех занятий в одном расписании
             if les.kind == Lesson.seminar:  # если занятие семинар,
                 last_seminar_number = les.number  # то запоминаем его номер
@@ -51,8 +51,8 @@ class SeminarBeforeLecture(UndesirableEffect):
                 # или равен номеру семинара, то
                 print(f"Лекция №{les.number} позже Семинара №{last_seminar_number}"  # выводим предупреждение,
                       f" в день {les.day} недели {les.week}")  # день и неделю
-                ue_count += 1
-        if ue_count == 0:
+                self.ue_count += 1
+        if self.ue_count == 0:
             print(f'Все в порядке. {self._kind} не выявлено')
 
 
@@ -71,7 +71,6 @@ class ManyLecturesInOneDay(UndesirableEffect):
 
     def many_lectures_in_one_day(self):
         """"Много лекций (больше двух) в один день"""
-        ue_count = 0
         for les in self.schedule.lessons:  # Для всех занятий в одном расписании
             if les.kind == 'Лекция' and self.day == les.day and self.week == les.week:  # если занятие лекция и
                 # у него совпадает предыдущие день и номер недели при сравнении, то
@@ -82,8 +81,8 @@ class ManyLecturesInOneDay(UndesirableEffect):
                 print(f"Лекций {self.lecture_pair} (больше, чем {self.max_lecture_pair}) "  # выводим предупреждение, 
                       f"в день {self.day} недели {self.week}")  # день и неделю
                 self.lecture_pair = 1  # Восстанавливаем начальное число счетчика лекций
-                ue_count += 1
-        if ue_count == 0:
+                self.ue_count += 1
+        if self.ue_count == 0:
             print(f'Все в порядке. {self._kind} не выявлено')
 
 
@@ -114,8 +113,9 @@ class Expert:
     # def __repr__(self):
     #     return f'Расписание {self.schedules_number}'
 
-    def load(self):
-        self.load_df_from_excel(file_path='input/', table_name='Расписание №2 Form')
+    def load(self, file_path, table_name):
+        self.load_df_from_excel(file_path, table_name)
+        # self.load_df_from_excel(file_path='input/', table_name='Расписание №2 Form')
         self.unpack()
         self.create_schedule()
 
@@ -139,7 +139,7 @@ class Expert:
         # self.unpack_df = self.unpack_df.reindex(columns=['#'] + list(self.unpack_df.columns))  # Переносим # вперед
         self.unpack_df['#'] = self.unpack_df.index  # Записываем в # индекс pack (свернутой формы)
         self.unpack_df = self.unpack_df.sort_values(by=['week', 'day', 'pair'],
-                                                    ascending=[True, True, True],na_position='first')
+                                                    ascending=[True, True, True], na_position='first')
         self.unpack_df.index = list(range(1, len(self.unpack_df) + 1))  # Создаем новый индекс занятий без повторений
         print()
         print('Развернутая свертка')
@@ -473,7 +473,7 @@ class Building:
 
 if __name__ == '__main__':
     expert = Expert()
-    expert.load()
+    expert.load(file_path='input/', table_name='Расписание №2 Form')
     expert.schedule.create_ue_objects()
     expert.handling()
     # schedule = Schedule()
