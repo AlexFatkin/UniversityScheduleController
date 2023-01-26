@@ -36,12 +36,14 @@ class SeminarBeforeLecture(UndesirableEffect):
         super().__init__(name="Семинар до лекции", kind="Предупреждение")
 
     def find(self):
-        # print(self._name)
+        print()
+        print(f'{self._kind} : {self._name} ')
         self.seminar_befor_lecture()
 
     def seminar_befor_lecture(self):
         """"Семинар проводится до лекции"""
         last_seminar_number = 0
+        ue_count = 0
         for les in self.schedule.lessons:  # Для всех занятий в одном расписании
             if les.kind == Lesson.seminar:  # если занятие семинар,
                 last_seminar_number = les.number  # то запоминаем его номер
@@ -49,14 +51,40 @@ class SeminarBeforeLecture(UndesirableEffect):
                 # или равен номеру семинара, то
                 print(f"Лекция №{les.number} позже Семинара №{last_seminar_number}"  # выводим предупреждение,
                       f" в день {les.day} недели {les.week}")  # день и неделю
+                ue_count += 1
+        if ue_count == 0:
+            print(f'Все в порядке. {self._kind} не выявлено')
 
 
 class ManyLecturesInOneDay(UndesirableEffect):
     def __init__(self):
         super().__init__(name="Много лекций в один день", kind="Предупреждение")
+        self.lecture_pair = 1  # Начальное число лекций (для счетчика)
+        self.max_lecture_pair = 2  # Максимальное число пар лекций в один день
+        self.week = 0  # Номер недели
+        self.day = 0  # Номер дня недели (1 - Пн, 2 - Вт и т.д.)
 
     def find(self):
-        print(self._name)
+        print()
+        print(f'{self._kind} : {self._name} ')
+        self.many_lectures_in_one_day()
+
+    def many_lectures_in_one_day(self):
+        """"Много лекций (больше двух) в один день"""
+        ue_count = 0
+        for les in self.schedule.lessons:  # Для всех занятий в одном расписании
+            if les.kind == 'Лекция' and self.day == les.day and self.week == les.week:  # если занятие лекция и
+                # у него совпадает предыдущие день и номер недели при сравнении, то
+                self.lecture_pair += 1  # увеличиваем счетчик числа лекций на 1
+            self.week = les.week  # Запоминаем номер недели для последующего сравнения
+            self.day = les.day  # Запоминаем номер дня недели для последующего сравнения
+            if self.lecture_pair > self.max_lecture_pair:  # Если число лекций в день больше установленного, то
+                print(f"Лекций {self.lecture_pair} (больше, чем {self.max_lecture_pair}) "  # выводим предупреждение, 
+                      f"в день {self.day} недели {self.week}")  # день и неделю
+                self.lecture_pair = 1  # Восстанавливаем начальное число счетчика лекций
+                ue_count += 1
+        if ue_count == 0:
+            print(f'Все в порядке. {self._kind} не выявлено')
 
 
 def save_in_excel(df_restructured, table_name, sheet_name):
@@ -87,7 +115,7 @@ class Expert:
     #     return f'Расписание {self.schedules_number}'
 
     def load(self):
-        self.load_df_from_excel(file_path='input/', table_name='Расписание №1 Form')
+        self.load_df_from_excel(file_path='input/', table_name='Расписание №2 Form')
         self.unpack()
         self.create_schedule()
 
@@ -105,11 +133,13 @@ class Expert:
         self.unpack_df = pd.DataFrame()
         for i in range(0, len(self.pack_df)):
             s = self.pack_df.iloc[i]
-            for w in s['week'].split(sep=','):
+            for w in str(s['week']).split(sep=','):
                 s['week'] = w
                 self.unpack_df = pd.concat([self.unpack_df, s.to_frame().T])
         # self.unpack_df = self.unpack_df.reindex(columns=['#'] + list(self.unpack_df.columns))  # Переносим # вперед
         self.unpack_df['#'] = self.unpack_df.index  # Записываем в # индекс pack (свернутой формы)
+        self.unpack_df = self.unpack_df.sort_values(by=['week', 'day', 'pair'],
+                                                    ascending=[True, True, True],na_position='first')
         self.unpack_df.index = list(range(1, len(self.unpack_df) + 1))  # Создаем новый индекс занятий без повторений
         print()
         print('Развернутая свертка')
