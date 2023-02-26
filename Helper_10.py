@@ -70,24 +70,57 @@ class ManyLecturesInOneDay(UndesirableEffect):
         print()
         print(f'{self._kind} : {self._name} ')
         self.many_lectures_in_one_day()
-
     def many_lectures_in_one_day(self):
         """"Много лекций (больше двух) в один день"""
         for les in self.schedule.lessons:  # Для всех занятий в одном расписании
-            if les.kind == 'Лекция' and self.day == les.day and self.week == les.week:  # если занятие лекция и
-                # у него совпадает предыдущие день и номер недели при сравнении, то
-                self.lecture_pair += 1  # увеличиваем счетчик числа лекций на 1
-            self.week = les.week  # Запоминаем номер недели для последующего сравнения
-            self.day = les.day  # Запоминаем номер дня недели для последующего сравнения
+#           if les.kind == 'Семинар':
+#               self.lecture_pair = 1
+#            if les.kind == 'Лекция' and self.day == les.day and self.week == les.week:  # если занятие лекция и
+#                                                   # у него совпадает предыдущие день и номер недели при сравнении, то
+#                 self.lecture_pair += 1  # увеличиваем счетчик числа лекций на 1
+#            self.week = les.week  # Запоминаем номер недели для последующего сравнения
+#            self.day = les.day  # Запоминаем номер дня недели для последующего сравнения
+#Иная версия
+            if les.kind =='Лекция' and self.day == les.day and self.week == les.week:
+                self.lecture_pair += 1
+            if self.week != les.week:
+                self.lecture_pair = 1
+            if les.kind == 'Лекция':
+                self.week = les.week
+
+                self.day = les.day
             if self.lecture_pair > self.max_lecture_pair:  # Если число лекций в день больше установленного, то
-                print(f"Лекций {self.lecture_pair} (больше, чем {self.max_lecture_pair}) "  # выводим предупреждение, 
+                print(f"Лекций {self.lecture_pair} больше, чем {self.max_lecture_pair}) "  # выводим предупреждение, 
                       f"в день {self.day} недели {self.week}")  # день и неделю
                 self.lecture_pair = 1  # Восстанавливаем начальное число счетчика лекций
                 self.ue_count += 1
         if self.ue_count == 0:
             print(f'Все в порядке. {self._kind} не выявлено')
 
-
+class OneGroupInDiffPlaces(UndesirableEffect):
+    def __init__(self):
+        super().__init__(name="Одна группа находится на двух разных парах", kind="Ошибка")
+        self.group = 0
+        self.teacher = 0
+        self.pair = 0
+        self.day = 0
+        self.groups = []
+    def find(self):
+        print()
+        print(f'{self._kind} : {self._name} ')
+        self.One_Group_In_Diff_Places()
+    def One_Group_In_Diff_Places(self):
+        for les in self.schedule.lessons:
+            if self.teacher != les.teacher and self.group == les.group and self.pair == les.pair and self.day == les.day:
+               print(f"Группа {self.group} находится в двух разных местах")
+               self.ue_count += 1
+            self.group = les.group
+            self.groups = []
+            self.teacher = les.teacher
+            self.pair = les.pair
+            self.day = les.day
+        if self.ue_count == 0:
+           print(f'Всё в порядке. {self._kind} не выявлена')
 def save_in_excel(df_restructured, table_name, sheet_name):
     """Сохраняем данные датафрейма в таблице excel"""
     df_restructured.to_excel(table_name, sheet_name=sheet_name)  # Сохраняем данные датафрейма в таблице excel
@@ -138,6 +171,12 @@ class Expert:
             for w in str(s['week']).split(sep=','):
                 s['week'] = w
                 self.unpack_df = pd.concat([self.unpack_df, s.to_frame().T])
+      # self.unpack_df = pd.DataFrame()
+      # for h in range(0, len(self.pack_df)):
+      #     d = self.pack_df.iloc[h]
+      #     for g in str(d['group']).split(sep=', '):
+      #         d['group'] = g
+      #         self.unpack_df = pd.concat([self.unpack_df, d.to_frame().T])
         # self.unpack_df = self.unpack_df.reindex(columns=['#'] + list(self.unpack_df.columns))  # Переносим # вперед
         self.unpack_df['#'] = self.unpack_df.index  # Записываем в # индекс pack (свернутой формы)
         self.unpack_df = self.unpack_df.sort_values(by=['week', 'day', 'pair'],
@@ -147,7 +186,6 @@ class Expert:
         print('Развернутая свертка')
         print(self.unpack_df)
         return self.unpack_df
-
     def create_schedule(self):
         self.schedule = Schedule(name=self.table_name, year=2022, term=1)
         for id in self.unpack_df.index:
@@ -228,7 +266,7 @@ class Schedule:
         """Создает набор объектов нежелательных явлений"""
         self.undesirable_effect_list.append(SeminarBeforeLecture())
         self.undesirable_effect_list.append(ManyLecturesInOneDay())
-
+        self.undesirable_effect_list.append(OneGroupInDiffPlaces())
     def unpack(self):
         """Распаковка свертки"""
         self.unpack_df = pd.DataFrame()
@@ -327,3 +365,4 @@ if __name__ == '__main__':
     expert.load(file_path='input/', table_name='Расписание №1 Form')  # Эксперт загружает свернутую форму расписания
     expert.schedule.create_ue_objects()  # и список объектов НЯ
     expert.handling()  # Эксперт запускает обработку распакованного расписания объектами НЯ
+
