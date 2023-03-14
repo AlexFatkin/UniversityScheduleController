@@ -49,10 +49,10 @@ class SeminarBeforeLecture(UndesirableEffect):
         for les in self.schedule.lessons:  # Для всех занятий в одном расписании
             if les.kind == Lesson.seminar:  # если занятие семинар,
                 last_seminar_number = les.number  # то запоминаем его номер
-            elif les.kind == Lesson.lecture and last_seminar_number >= les.number:  # и если номер лекции больше
-                # или равен номеру семинара, то
-                print(f"Лекция №{les.number} позже Семинара №{last_seminar_number}"  # выводим предупреждение,
-                      f" в день {les.day} недели {les.week}")  # день и неделю
+            elif les.kind == Lesson.lecture and last_seminar_number >= les.number:
+                # и если номер лекции больше или равен номеру семинара, то
+                print(f"Лекция №{les.number} позже Семинара №{last_seminar_number}"  
+                      f" в день {les.day} недели {les.week}")  # # выводим предупреждение
                 self.ue_count += 1
         if self.ue_count == 0:
             print(f'Все в порядке. {self._kind} не выявлено')
@@ -237,8 +237,6 @@ class Schedule:
         self.undesirable_effect_list = []
         self.file_path = ''
         self.table_name = name
-        self.year = year
-        self.term = term
         self.df = None
         self.unpack_df = None
         self.lessons = []
