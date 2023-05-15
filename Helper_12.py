@@ -93,12 +93,7 @@ class ManyLecturesInOneDay(UndesirableEffect):
 
 
 def Equal_Group_In_Two_Lessons(first_lesson, second_lesson):
-    group_names = []
-    for i in range(0, len(first_lesson.groups)):  # Отправляем на сравнение по одному первому занятию
-        for j in range(i, len(second_lesson.groups)):  # по всем занятиям в расписании второму занятию
-            if first_lesson.groups[i].name == second_lesson.groups[j].name:
-                group_names.append(first_lesson.groups[i].name)
-    return group_names
+    return set(first_lesson.groups) & set(second_lesson.groups)
 
 
 class OneGroupInDiffPlaces(UndesirableEffect):
@@ -120,16 +115,23 @@ class OneGroupInDiffPlaces(UndesirableEffect):
         self.One_Group_In_Diff_Places_In_One_Time()
 
     def One_Group_In_Diff_Places_In_One_Time(self):
-        self.groups_name = []
+        self.groups_name = {}
         for i in range(0, len(self.schedule.lessons)):  # Отправляем на сравнение  по одному занятию мз расписания
-            for j in range(i, len(self.schedule.lessons)):  # по всем занятиям в расписании с без повторений
-                if self.schedule.lessons[i].groups[0].name == self.schedule.lessons[j].groups[0].name and \
-                        self.schedule.lessons[i].week == self.schedule.lessons[j].week and \
-                        self.schedule.lessons[i].day == self.schedule.lessons[j].day and \
-                        self.schedule.lessons[i].pair == self.schedule.lessons[j].pair and \
-                        self.schedule.lessons[i].auditorium.name != self.schedule.lessons[j].auditorium.name:
+            for j in range(0, len(self.schedule.lessons)):  # по всем занятиям в расписании с без повторений
+                # self.groups_name_1 = [g.name for g in self.schedule.lessons[i].groups]
+                # self.groups_name_2 = [g.name for g in self.schedule.lessons[j].groups]
+                self.groups_name = set([g.name for g in self.schedule.lessons[i].groups]) & \
+                                   set([g.name for g in self.schedule.lessons[j].groups])
+                a = (self.groups_name != set() and
+                     (self.schedule.lessons[i].auditorium.name != self.schedule.lessons[j].auditorium.name) and
+                     (self.schedule.lessons[i].week == self.schedule.lessons[j].week) and
+                     (self.schedule.lessons[i].day == self.schedule.lessons[j].day) and
+                     (self.schedule.lessons[i].pair == self.schedule.lessons[j].pair))
+                # if self.schedule.lessons[i].groups[0].name == self.schedule.lessons[j].groups[0].name and \
+                if a:
                     self.ue_count += 1  # Счетчик ошибок
-                    print(f"Группа {self.schedule.lessons[i].groups[0].name}"
+                    # print(f"Группа {self.schedule.lessons[i].groups[0].name}"
+                    print(f"Группа {self.groups_name}"
                           f" одновременно w{self.schedule.lessons[j].week}"
                           f"d{self.schedule.lessons[j].day}"
                           f"p{self.schedule.lessons[j].pair}"
