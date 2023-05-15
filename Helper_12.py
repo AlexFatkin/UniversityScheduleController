@@ -92,16 +92,27 @@ class ManyLecturesInOneDay(UndesirableEffect):
             print(f'Все в порядке. {self._kind} не выявлено')
 
 
+def Equal_Group_In_Two_Lessons(first_lesson, second_lesson):
+    group_names = []
+    for i in range(0, len(first_lesson.groups)):  # Отправляем на сравнение по одному первому занятию
+        for j in range(i, len(second_lesson.groups)):  # по всем занятиям в расписании второму занятию
+            if first_lesson.groups[i].name == second_lesson.groups[j].name:
+                group_names.append(first_lesson.groups[i].name)
+    return group_names
+
+
 class OneGroupInDiffPlaces(UndesirableEffect):
     def __init__(self):
         super().__init__(name="Одна группа одновременно находится в двух разных местах", kind="Ошибка")
+        self.groups_name = None
+        self.ue_count = 0
+        self.groups = []
         # self.group = Group()
         # self.auditorium = Auditorium()
         # # self.teacher = 0 # Преподаватель в этой проверке не причем
         # self.pair = '1'
         # self.week = '1'  # Номер недели
         # self.day = '1'
-        # self.groups = []
 
     def find(self):
         print()
@@ -109,15 +120,16 @@ class OneGroupInDiffPlaces(UndesirableEffect):
         self.One_Group_In_Diff_Places_In_One_Time()
 
     def One_Group_In_Diff_Places_In_One_Time(self):
-        for i in range(0, len(self.schedule.lessons) - 1):  # Отправляем на сравнение  по одному занятию мз расписания
-            for j in range(0, len(self.schedule.lessons)):  # по всем занятиям в расписании
-                if self.schedule.lessons[i].group.name == self.schedule.lessons[j].group.name and \
+        self.groups_name = []
+        for i in range(0, len(self.schedule.lessons)):  # Отправляем на сравнение  по одному занятию мз расписания
+            for j in range(i, len(self.schedule.lessons)):  # по всем занятиям в расписании с без повторений
+                if self.schedule.lessons[i].groups[0].name == self.schedule.lessons[j].groups[0].name and \
                         self.schedule.lessons[i].week == self.schedule.lessons[j].week and \
                         self.schedule.lessons[i].day == self.schedule.lessons[j].day and \
                         self.schedule.lessons[i].pair == self.schedule.lessons[j].pair and \
                         self.schedule.lessons[i].auditorium.name != self.schedule.lessons[j].auditorium.name:
-                    self.ue_count += 1
-                    print(f"Группа {self.schedule.lessons[i].group.name}  "
+                    self.ue_count += 1  # Счетчик ошибок
+                    print(f"Группа {self.schedule.lessons[i].groups[0].name}"
                           f" одновременно w{self.schedule.lessons[j].week}"
                           f"d{self.schedule.lessons[j].day}"
                           f"p{self.schedule.lessons[j].pair}"
@@ -135,8 +147,9 @@ class OneGroupInDiffPlaces(UndesirableEffect):
                     #     # self.teacher = les.teacher
                     #     self.pair = les.pair
                     #     self.day = les.day
-                    if self.ue_count == 0:
-                        print(f'Всё в порядке. {self._kind} не выявлена')
+                self.groups_name = Equal_Group_In_Two_Lessons(self.schedule.lessons[i], self.schedule.lessons[j])
+        if self.ue_count == 0:  # Счетчик ошибок
+            print(f'Всё в порядке. {self._kind} не выявлена')
 
 
 def save_in_excel(df_restructured, table_name, sheet_name):
