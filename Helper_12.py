@@ -95,9 +95,10 @@ class ManyLecturesInOneDay(UndesirableEffect):
 class OneGroupInDiffPlaces(UndesirableEffect):
     def __init__(self):
         super().__init__(name="Одна группа находится на двух разных парах", kind="Ошибка")
-        self.group = 0
-        self.teacher = 0
+        self.group = None
+        # self.teacher = 0 # Преподаватель в этой проверке не причем
         self.pair = 0
+        self.week = 0  # Номер недели
         self.day = 0
         self.groups = []
 
@@ -108,13 +109,13 @@ class OneGroupInDiffPlaces(UndesirableEffect):
 
     def One_Group_In_Diff_Places(self):
         for les in self.schedule.lessons:
-            if self.teacher == les.teacher and self.group == les.group and\
-                    self.pair == les.pair and (self.day == les.day):
-                print(f"Группа {self.group} находится в двух разных местах")
+            if self.week == les.week and self.day == les.day and self.pair == les.pair and \
+                    self.group.name == les.group.name:
+                print(f"Группа {self.group.name} находится в двух разных местах")
                 self.ue_count += 1
-            self.group = les.group
+            self.group.name = les.group.name
             self.groups = []
-            self.teacher = les.teacher
+            # self.teacher = les.teacher
             self.pair = les.pair
             self.day = les.day
         if self.ue_count == 0:
@@ -364,6 +365,6 @@ class Group:
 
 if __name__ == '__main__':
     expert = Expert()  # Создаем Эксперта
-    expert.load(file_path='input/', table_name='Расписание №1 Form')  # Эксперт загружает свернутую форму расписания
+    expert.load(file_path='input/', table_name='Расписание №10 Form')  # Эксперт загружает свернутую форму расписания
     expert.schedule.create_ue_objects()  # и список объектов НЯ
     expert.handling()  # Эксперт запускает обработку распакованного расписания объектами НЯ
