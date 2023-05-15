@@ -94,32 +94,49 @@ class ManyLecturesInOneDay(UndesirableEffect):
 
 class OneGroupInDiffPlaces(UndesirableEffect):
     def __init__(self):
-        super().__init__(name="Одна группа находится на двух разных парах", kind="Ошибка")
-        self.group = None
-        # self.teacher = 0 # Преподаватель в этой проверке не причем
-        self.pair = 0
-        self.week = 0  # Номер недели
-        self.day = 0
-        self.groups = []
+        super().__init__(name="Одна группа одновременно находится в двух разных местах", kind="Ошибка")
+        # self.group = Group()
+        # self.auditorium = Auditorium()
+        # # self.teacher = 0 # Преподаватель в этой проверке не причем
+        # self.pair = '1'
+        # self.week = '1'  # Номер недели
+        # self.day = '1'
+        # self.groups = []
 
     def find(self):
         print()
         print(f'{self._kind} : {self._name} ')
-        self.One_Group_In_Diff_Places()
+        self.One_Group_In_Diff_Places_In_One_Time()
 
-    def One_Group_In_Diff_Places(self):
-        for les in self.schedule.lessons:
-            if self.week == les.week and self.day == les.day and self.pair == les.pair and \
-                    self.group.name == les.group.name:
-                print(f"Группа {self.group.name} находится в двух разных местах")
-                self.ue_count += 1
-            self.group.name = les.group.name
-            self.groups = []
-            # self.teacher = les.teacher
-            self.pair = les.pair
-            self.day = les.day
-        if self.ue_count == 0:
-            print(f'Всё в порядке. {self._kind} не выявлена')
+    def One_Group_In_Diff_Places_In_One_Time(self):
+        for i in range(0, len(self.schedule.lessons) - 1):  # Отправляем на сравнение  по одному занятию мз расписания
+            for j in range(0, len(self.schedule.lessons)):  # по всем занятиям в расписании
+                if self.schedule.lessons[i].group.name == self.schedule.lessons[j].group.name and \
+                        self.schedule.lessons[i].week == self.schedule.lessons[j].week and \
+                        self.schedule.lessons[i].day == self.schedule.lessons[j].day and \
+                        self.schedule.lessons[i].pair == self.schedule.lessons[j].pair and \
+                        self.schedule.lessons[i].auditorium.name != self.schedule.lessons[j].auditorium.name:
+                    self.ue_count += 1
+                    print(f"Группа {self.schedule.lessons[i].group.name}  "
+                          f" одновременно w{self.schedule.lessons[j].week}"
+                          f"d{self.schedule.lessons[j].day}"
+                          f"p{self.schedule.lessons[j].pair}"
+                          f" находится в {self.schedule.lessons[i].auditorium.name} и"
+                          f" {self.schedule.lessons[j].auditorium.name}  ")
+                    #               f" и {les.auditorium.name}")
+                    # for les in self.schedule.lessons:
+                    #     if self.week == les.week and self.day == les.day and self.pair == les.pair and \
+                    #             self.group.name == les.group.name and self.auditorium.name != les.auditorium.name:
+                    #         print(f"Группа {self.group.name}  одновременно находится в {self.auditorium.name} "
+                    #               f" и {les.auditorium.name}")
+                    #         self.ue_count += 1
+                    #     self.group.name = les.group.name
+                    #     self.groups = []
+                    #     # self.teacher = les.teacher
+                    #     self.pair = les.pair
+                    #     self.day = les.day
+                    if self.ue_count == 0:
+                        print(f'Всё в порядке. {self._kind} не выявлена')
 
 
 def save_in_excel(df_restructured, table_name, sheet_name):
@@ -365,6 +382,6 @@ class Group:
 
 if __name__ == '__main__':
     expert = Expert()  # Создаем Эксперта
-    expert.load(file_path='input/', table_name='Расписание №10 Form')  # Эксперт загружает свернутую форму расписания
+    expert.load(file_path='input/', table_name='Расписание №11 Form')  # Эксперт загружает свернутую форму расписания
     expert.schedule.create_ue_objects()  # и список объектов НЯ
     expert.handling()  # Эксперт запускает обработку распакованного расписания объектами НЯ
