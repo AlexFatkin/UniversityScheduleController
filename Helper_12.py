@@ -116,6 +116,35 @@ class OneGroupInDiffPlaces(UndesirableEffect):
 
     def One_Group_In_Diff_Places_In_One_Time(self):
         self.groups_name = {}
+        for lesson_1 in self.schedule.lessons:  # Отправляем на сравнение  по одному занятию мз расписания
+            for lesson_2 in self.schedule.lessons:  # по всем занятиям в расписании с без повторений
+                self.groups_name = set([g.name for g in lesson_1.groups]) & set([g.name for g in lesson_2.groups])
+                if (self.groups_name != set() and
+                        (lesson_1.auditorium.name != lesson_2.auditorium.name) and
+                        (lesson_1.week == lesson_2.week) and
+                        (lesson_1.day == lesson_2.day) and
+                        (lesson_1.pair == lesson_2.pair)):
+                    self.ue_count += 1  # Счетчик ошибок
+                    print(f"Группа {self.groups_name}"
+                          f" одновременно w{lesson_1.week}d{lesson_1.day}p{lesson_1.pair}"
+                          f" находится в {lesson_1.auditorium.name} и {lesson_2.auditorium.name}")
+                    #               f" и {les.auditorium.name}")
+                    # for les in self.schedule.lessons:
+                    #     if self.week == les.week and self.day == les.day and self.pair == les.pair and \
+                    #             self.group.name == les.group.name and self.auditorium.name != les.auditorium.name:
+                    #         print(f"Группа {self.group.name}  одновременно находится в {self.auditorium.name} "
+                    #               f" и {les.auditorium.name}")
+                    #         self.ue_count += 1
+                    #     self.group.name = les.group.name
+                    #     self.groups = []
+                    #     # self.teacher = les.teacher
+                    #     self.pair = les.pair
+                    #     self.day = les.day
+        if self.ue_count == 0:  # Счетчик ошибок
+            print(f'Всё в порядке. {self._kind} не выявлена')
+
+    def One_Group_In_Diff_Places_In_One_Time_old(self):
+        self.groups_name = {}
         for i in range(0, len(self.schedule.lessons)):  # Отправляем на сравнение  по одному занятию мз расписания
             for j in range(0, len(self.schedule.lessons)):  # по всем занятиям в расписании с без повторений
                 # self.groups_name_1 = [g.name for g in self.schedule.lessons[i].groups]
