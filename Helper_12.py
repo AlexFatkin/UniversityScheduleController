@@ -92,10 +92,6 @@ class ManyLecturesInOneDay(UndesirableEffect):
             print(f'Все в порядке. {self._kind} не выявлено')
 
 
-def Equal_Group_In_Two_Lessons(first_lesson, second_lesson):
-    return set(first_lesson.groups) & set(second_lesson.groups)
-
-
 class OneGroupInDiffPlaces(UndesirableEffect):
     def __init__(self):
         super().__init__(name="Одна группа одновременно находится в двух разных местах", kind="Ошибка")
@@ -116,69 +112,46 @@ class OneGroupInDiffPlaces(UndesirableEffect):
 
     def One_Group_In_Diff_Places_In_One_Time(self):
         self.groups_name = {}
-        for lesson_1 in self.schedule.lessons:  # Отправляем на сравнение  по одному занятию мз расписания
-            for lesson_2 in self.schedule.lessons:  # по всем занятиям в расписании с без повторений
-                self.groups_name = set([g.name for g in lesson_1.groups]) & set([g.name for g in lesson_2.groups])
+        for i in range(0, len(self.schedule.lessons)):  # Отправляем на сравнение  по одному занятию мз расписания
+            for j in range(i, len(self.schedule.lessons)):   # по всем занятиям в расписании с без повторений
+                self.groups_name = set([g.name for g in self.schedule.lessons[i].groups]) & \
+                                   set([g.name for g in self.schedule.lessons[j].groups])
+                # ищем пересечение имен по двум группам
                 if (self.groups_name != set() and
-                        (lesson_1.auditorium.name != lesson_2.auditorium.name) and
-                        (lesson_1.week == lesson_2.week) and
-                        (lesson_1.day == lesson_2.day) and
-                        (lesson_1.pair == lesson_2.pair)):
-                    self.ue_count += 1  # Счетчик ошибок
+                        #  Если это пересечение не пустое
+                        (self.schedule.lessons[i].auditorium.name != self.schedule.lessons[j].auditorium.name) and
+                        #  м аудитории не совпадают
+                        (self.schedule.lessons[i].week == self.schedule.lessons[j].week) and
+                        # а неделя, день и пара занятий одинаковы
+                        (self.schedule.lessons[i].day == self.schedule.lessons[j].day) and
+                        (self.schedule.lessons[i].pair == self.schedule.lessons[j].pair)):
+                    self.ue_count += 1  # Увеличиваем Счетчик НЯ
                     print(f"Группа {self.groups_name}"
-                          f" одновременно w{lesson_1.week}d{lesson_1.day}p{lesson_1.pair}"
-                          f" находится в {lesson_1.auditorium.name} и {lesson_2.auditorium.name}")
-                    #               f" и {les.auditorium.name}")
-                    # for les in self.schedule.lessons:
-                    #     if self.week == les.week and self.day == les.day and self.pair == les.pair and \
-                    #             self.group.name == les.group.name and self.auditorium.name != les.auditorium.name:
-                    #         print(f"Группа {self.group.name}  одновременно находится в {self.auditorium.name} "
-                    #               f" и {les.auditorium.name}")
-                    #         self.ue_count += 1
-                    #     self.group.name = les.group.name
-                    #     self.groups = []
-                    #     # self.teacher = les.teacher
-                    #     self.pair = les.pair
-                    #     self.day = les.day
+                          f" одновременно w{self.schedule.lessons[i].week}d{self.schedule.lessons[i].day}"
+                          f"p{self.schedule.lessons[i].pair}"
+                          f" находится в {self.schedule.lessons[i].auditorium.name} и "
+                          f"{self.schedule.lessons[j].auditorium.name}")
         if self.ue_count == 0:  # Счетчик ошибок
             print(f'Всё в порядке. {self._kind} не выявлена')
 
-    def One_Group_In_Diff_Places_In_One_Time_old(self):
+    def One_Group_In_Diff_Places_In_One_Time_Old(self):
         self.groups_name = {}
-        for i in range(0, len(self.schedule.lessons)):  # Отправляем на сравнение  по одному занятию мз расписания
-            for j in range(0, len(self.schedule.lessons)):  # по всем занятиям в расписании с без повторений
-                # self.groups_name_1 = [g.name for g in self.schedule.lessons[i].groups]
-                # self.groups_name_2 = [g.name for g in self.schedule.lessons[j].groups]
-                self.groups_name = set([g.name for g in self.schedule.lessons[i].groups]) & \
-                                   set([g.name for g in self.schedule.lessons[j].groups])
-                a = (self.groups_name != set() and
-                     (self.schedule.lessons[i].auditorium.name != self.schedule.lessons[j].auditorium.name) and
-                     (self.schedule.lessons[i].week == self.schedule.lessons[j].week) and
-                     (self.schedule.lessons[i].day == self.schedule.lessons[j].day) and
-                     (self.schedule.lessons[i].pair == self.schedule.lessons[j].pair))
-                # if self.schedule.lessons[i].groups[0].name == self.schedule.lessons[j].groups[0].name and \
-                if a:
-                    self.ue_count += 1  # Счетчик ошибок
-                    # print(f"Группа {self.schedule.lessons[i].groups[0].name}"
+        for lesson_1 in self.schedule.lessons:  # Отправляем на сравнение  по одному занятию мз расписания
+            for lesson_2 in self.schedule.lessons:  # по всем занятиям в расписании с без повторений
+                self.groups_name = set([g.name for g in lesson_1.groups]) & set([g.name for g in lesson_2.groups])
+                # ищем пересечение имен по двум группам
+                if (self.groups_name != set() and
+                        #  Если это пересечение не пустое
+                        (lesson_1.auditorium.name != lesson_2.auditorium.name) and
+                        #  м аудитории не совпадают
+                        (lesson_1.week == lesson_2.week) and
+                        # а неделя, день и пара занятий одинаковы
+                        (lesson_1.day == lesson_2.day) and
+                        (lesson_1.pair == lesson_2.pair)):
+                    self.ue_count += 1  # Увеличиваем Счетчик НЯ
                     print(f"Группа {self.groups_name}"
-                          f" одновременно w{self.schedule.lessons[j].week}"
-                          f"d{self.schedule.lessons[j].day}"
-                          f"p{self.schedule.lessons[j].pair}"
-                          f" находится в {self.schedule.lessons[i].auditorium.name} и"
-                          f" {self.schedule.lessons[j].auditorium.name}  ")
-                    #               f" и {les.auditorium.name}")
-                    # for les in self.schedule.lessons:
-                    #     if self.week == les.week and self.day == les.day and self.pair == les.pair and \
-                    #             self.group.name == les.group.name and self.auditorium.name != les.auditorium.name:
-                    #         print(f"Группа {self.group.name}  одновременно находится в {self.auditorium.name} "
-                    #               f" и {les.auditorium.name}")
-                    #         self.ue_count += 1
-                    #     self.group.name = les.group.name
-                    #     self.groups = []
-                    #     # self.teacher = les.teacher
-                    #     self.pair = les.pair
-                    #     self.day = les.day
-                self.groups_name = Equal_Group_In_Two_Lessons(self.schedule.lessons[i], self.schedule.lessons[j])
+                          f" одновременно w{lesson_1.week}d{lesson_1.day}p{lesson_1.pair}"
+                          f" находится в {lesson_1.auditorium.name} и {lesson_2.auditorium.name}")
         if self.ue_count == 0:  # Счетчик ошибок
             print(f'Всё в порядке. {self._kind} не выявлена')
 
