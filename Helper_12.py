@@ -98,12 +98,6 @@ class OneGroupInDiffPlaces(UndesirableEffect):
         self.groups_name = None
         self.ue_count = 0
         self.groups = []
-        # self.group = Group()
-        # self.auditorium = Auditorium()
-        # # self.teacher = 0 # Преподаватель в этой проверке не причем
-        # self.pair = '1'
-        # self.week = '1'  # Номер недели
-        # self.day = '1'
 
     def find(self):
         print()
@@ -112,11 +106,16 @@ class OneGroupInDiffPlaces(UndesirableEffect):
 
     def One_Group_In_Diff_Places_In_One_Time(self):
         self.groups_name = {}
+        lessons = len(self.schedule.lessons)
         for i in range(0, len(self.schedule.lessons)):  # Отправляем на сравнение  по одному занятию мз расписания
-            for j in range(i, len(self.schedule.lessons)):   # по всем занятиям в расписании с без повторений
-                self.groups_name = set([g.name for g in self.schedule.lessons[i].groups]) & \
-                                   set([g.name for g in self.schedule.lessons[j].groups])
-                # ищем пересечение имен по двум группам
+            for j in range(i, len(self.schedule.lessons)):  # по всем занятиям в расписании с без повторений
+                a = set(([g.name for g in self.schedule.lessons[i].groups]))
+                b = set(([g.name for g in self.schedule.lessons[j].groups]))
+                # c = self.schedule.lessons[i].groups.split(sep=';')
+                # d = [g.name for g in self.schedule.lessons[i].groups][0].split(sep=',')
+                self.groups_name = a.intersection(b)
+                # self.groups_name = set(list([g.name for g in self.schedule.lessons[i].groups])) & \
+                #                    set(list([g.name for g in self.schedule.lessons[j].groups]))
                 if (self.groups_name != set() and
                         #  Если это пересечение не пустое
                         (self.schedule.lessons[i].auditorium.name != self.schedule.lessons[j].auditorium.name) and
@@ -131,6 +130,7 @@ class OneGroupInDiffPlaces(UndesirableEffect):
                           f"p{self.schedule.lessons[i].pair}"
                           f" находится в {self.schedule.lessons[i].auditorium.name} и "
                           f"{self.schedule.lessons[j].auditorium.name}")
+                # ищем пересечение имен по двум группам
         if self.ue_count == 0:  # Счетчик ошибок
             print(f'Всё в порядке. {self._kind} не выявлена')
 
@@ -163,7 +163,9 @@ def save_in_excel(df_restructured, table_name, sheet_name):
 
 def load_from_excel(table_name: str, sheet_name: str):
     """Загружаем данные из таблицы excel в датафрейм"""
-    return pd.read_excel(table_name, sheet_name, index_col=0)  # Загружаем данные из таблицы excel в датафрейм
+    df = pd.read_excel(table_name, sheet_name, header=0, converters={'week': str, 'group': str}, index_col=0)
+    # Загружаем данные из таблицы excel в датафрейм
+    return df
 
 
 class Expert:
@@ -209,7 +211,7 @@ class Expert:
         # self.unpack_df = pd.DataFrame()
         # for h in range(0, len(self.pack_df)):
         #     d = self.pack_df.iloc[h]
-        #     for g in str(d['group']).split(sep=', '):
+        #     for g in str(d['group']).split(sep=','):
         #         d['group'] = g
         #         self.unpack_df = pd.concat([self.unpack_df, d.to_frame().T])
         # self.unpack_df = self.unpack_df.reindex(columns=['#'] + list(self.unpack_df.columns))  # Переносим # вперед
@@ -399,6 +401,6 @@ class Group:
 
 if __name__ == '__main__':
     expert = Expert()  # Создаем Эксперта
-    expert.load(file_path='input/', table_name='Расписание №11 Form')  # Эксперт загружает свернутую форму расписания
+    expert.load(file_path='input/', table_name='Расписание №10 Form')  # Эксперт загружает свернутую форму расписания
     expert.schedule.create_ue_objects()  # и список объектов НЯ
     expert.handling()  # Эксперт запускает обработку распакованного расписания объектами НЯ
