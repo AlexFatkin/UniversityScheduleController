@@ -84,7 +84,7 @@ class ManyLecturesInOneDay(UndesirableEffect):
 
                 self.day = les.day
             if self.lecture_pair > self.max_lecture_pair:  # Если число лекций в день больше установленного, то
-                print(f"Лекций {self.lecture_pair} больше, чем {self.max_lecture_pair}) "  # выводим предупреждение, 
+                print(f"Лекций {self.lecture_pair} больше, чем {self.max_lecture_pair} "  # выводим предупреждение, 
                       f"в день {self.day} недели {self.week}")  # день и неделю
                 self.lecture_pair = 1  # Восстанавливаем начальное число счетчика лекций
                 self.ue_count += 1
@@ -401,6 +401,6 @@ class Group:
 
 if __name__ == '__main__':
     expert = Expert()  # Создаем Эксперта
-    expert.load(file_path='input/', table_name='Расписание №10 Form')  # Эксперт загружает свернутую форму расписания
+    expert.load(file_path='input/', table_name='Расписание №12 Form')  # Эксперт загружает свернутую форму расписания
     expert.schedule.create_ue_objects()  # и список объектов НЯ
     expert.handling()  # Эксперт запускает обработку распакованного расписания объектами НЯ
