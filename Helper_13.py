@@ -52,7 +52,7 @@ class SeminarBeforeLecture(UndesirableEffect):
                 last_seminar_number = les.number  # то запоминаем его номер
             elif les.kind == Lesson.lecture and last_seminar_number >= les.number:  # и если номер лекции больше
                 # или равен номеру семинара, то
-                print(f"Лекция №{les.number} позже Семинара №{last_seminar_number}"  # выводим предупреждение,
+                print(f"    Лекция №{les.number} позже Семинара №{last_seminar_number}"  # выводим предупреждение,
                       f" в день {les.day} недели {les.week}")  # день и неделю
                 self.ue_count += 1
         if self.ue_count == 0:
@@ -84,7 +84,7 @@ class ManyLecturesInOneDay(UndesirableEffect):
 
                 self.day = les.day
             if self.lecture_pair > self.max_lecture_pair:  # Если число лекций в день больше установленного, то
-                print(f"Лекций {self.lecture_pair} (больше, чем {self.max_lecture_pair}) "  # выводим предупреждение, 
+                print(f"    Лекций {self.lecture_pair} (больше, чем {self.max_lecture_pair}) "  # выводим предупреждение, 
                       f"в день {self.day} недели {self.week}")  # день и неделю
                 self.lecture_pair = 1  # Восстанавливаем начальное число счетчика лекций
                 self.ue_count += 1
@@ -124,7 +124,7 @@ class OneGroupInDiffPlaces(UndesirableEffect):
                         (self.schedule.lessons[i].day == self.schedule.lessons[j].day) and
                         (self.schedule.lessons[i].pair == self.schedule.lessons[j].pair)):
                     self.ue_count += 1  # Увеличиваем Счетчик НЯ
-                    print(f"Группа {self.groups_name}"
+                    print(f"    Группа {self.groups_name}"
                           f" одновременно w{self.schedule.lessons[i].week}d{self.schedule.lessons[i].day}"
                           f"p{self.schedule.lessons[i].pair}"
                           f" находится в {self.schedule.lessons[i].auditorium.name} и "
