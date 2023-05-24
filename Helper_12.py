@@ -219,9 +219,9 @@ class Expert:
         self.unpack_df = self.unpack_df.sort_values(by=['week', 'day', 'pair'],
                                                     ascending=[True, True, True], na_position='first')
         self.unpack_df.index = list(range(1, len(self.unpack_df) + 1))  # Создаем новый индекс занятий без повторений
-        print()
-        print('Развернутая свертка')
-        print(self.unpack_df)
+        # print()
+        # print('Развернутая свертка')
+        # print(self.unpack_df)
         return self.unpack_df
 
     def create_schedule(self):
