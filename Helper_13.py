@@ -301,9 +301,9 @@ class Schedule:
 
     def create_ue_objects(self):
         """Создает набор объектов нежелательных явлений"""
+        self.undesirable_effect_list.append(OneGroupInDiffPlaces())
         self.undesirable_effect_list.append(SeminarBeforeLecture())
         self.undesirable_effect_list.append(ManyLecturesInOneDay())
-        self.undesirable_effect_list.append(OneGroupInDiffPlaces())
 
     def unpack(self):
         """Распаковка свертки"""
