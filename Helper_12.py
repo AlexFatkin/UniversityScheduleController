@@ -106,7 +106,6 @@ class OneGroupInDiffPlaces(UndesirableEffect):
 
     def One_Group_In_Diff_Places_In_One_Time(self):
         self.groups_name = {}
-        lessons = len(self.schedule.lessons)
         for i in range(0, len(self.schedule.lessons)):  # Отправляем на сравнение  по одному занятию мз расписания
             for j in range(i, len(self.schedule.lessons)):  # по всем занятиям в расписании с без повторений
                 a = set(([g.name for g in self.schedule.lessons[i].groups]))
