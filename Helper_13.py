@@ -84,7 +84,7 @@ class ManyLecturesInOneDay(UndesirableEffect):
 
                 self.day = les.day
             if self.lecture_pair > self.max_lecture_pair:  # Если число лекций в день больше установленного, то
-                print(f"    Лекций {self.lecture_pair} (больше, чем {self.max_lecture_pair}) "  # выводим предупреждение, 
+                print(f"    Лекций {self.lecture_pair} (больше, чем {self.max_lecture_pair}) "  # выводим предупреждение 
                       f"в день {self.day} недели {self.week}")  # день и неделю
                 self.lecture_pair = 1  # Восстанавливаем начальное число счетчика лекций
                 self.ue_count += 1
@@ -110,11 +110,7 @@ class OneGroupInDiffPlaces(UndesirableEffect):
             for j in range(i, len(self.schedule.lessons)):  # по всем занятиям в расписании с без повторений
                 a = set(([g.name for g in self.schedule.lessons[i].groups]))
                 b = set(([g.name for g in self.schedule.lessons[j].groups]))
-                # c = self.schedule.lessons[i].groups.split(sep=';')
-                # d = [g.name for g in self.schedule.lessons[i].groups][0].split(sep=',')
                 self.groups_name = a.intersection(b)
-                # self.groups_name = set(list([g.name for g in self.schedule.lessons[i].groups])) & \
-                #                    set(list([g.name for g in self.schedule.lessons[j].groups]))
                 if (self.groups_name != set() and
                         #  Если это пересечение не пустое
                         (self.schedule.lessons[i].auditorium.name != self.schedule.lessons[j].auditorium.name) and
@@ -130,27 +126,6 @@ class OneGroupInDiffPlaces(UndesirableEffect):
                           f" находится в {self.schedule.lessons[i].auditorium.name} и "
                           f"{self.schedule.lessons[j].auditorium.name}")
                 # ищем пересечение имен по двум группам
-        if self.ue_count == 0:  # Счетчик ошибок
-            print(f'Всё в порядке. {self._kind} не выявлена')
-
-    def One_Group_In_Diff_Places_In_One_Time_Old(self):
-        self.groups_name = {}
-        for lesson_1 in self.schedule.lessons:  # Отправляем на сравнение  по одному занятию мз расписания
-            for lesson_2 in self.schedule.lessons:  # по всем занятиям в расписании с без повторений
-                self.groups_name = set([g.name for g in lesson_1.groups]) & set([g.name for g in lesson_2.groups])
-                # ищем пересечение имен по двум группам
-                if (self.groups_name != set() and
-                        #  Если это пересечение не пустое
-                        (lesson_1.auditorium.name != lesson_2.auditorium.name) and
-                        #  м аудитории не совпадают
-                        (lesson_1.week == lesson_2.week) and
-                        # а неделя, день и пара занятий одинаковы
-                        (lesson_1.day == lesson_2.day) and
-                        (lesson_1.pair == lesson_2.pair)):
-                    self.ue_count += 1  # Увеличиваем Счетчик НЯ
-                    print(f"Группа {self.groups_name}"
-                          f" одновременно w{lesson_1.week}d{lesson_1.day}p{lesson_1.pair}"
-                          f" находится в {lesson_1.auditorium.name} и {lesson_2.auditorium.name}")
         if self.ue_count == 0:  # Счетчик ошибок
             print(f'Всё в порядке. {self._kind} не выявлена')
 
@@ -400,6 +375,6 @@ class Group:
 
 if __name__ == '__main__':
     expert = Expert()  # Создаем Эксперта
-    expert.load(file_path='input/', table_name='Расписание №12 Form')  # Эксперт загружает свернутую форму расписания
+    expert.load(file_path='input/', table_name='Расписание №13 Form')  # Эксперт загружает свернутую форму расписания
     expert.schedule.create_ue_objects()  # и список объектов НЯ
     expert.handling()  # Эксперт запускает обработку распакованного расписания объектами НЯ
