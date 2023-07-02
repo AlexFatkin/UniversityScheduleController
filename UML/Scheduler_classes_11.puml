@@ -1,0 +1,133 @@
+PlantUML
+@startuml
+title Scheduler Domain
+skinparam class {
+BackgroundColor White
+ArrowColor Black
+BorderColor Black
+}
+skinparam object {
+BackgroundColor White
+ArrowColor Black
+BorderColor Black
+}
+hide circle
+'hide members
+scale 1.3
+skinparam DefaultTextAlignment left
+skinparam shadowing false
+'skinparam monochrome true
+skinparam packageStyle frame
+
+package Handler {
+
+class UndesirableEffect{
+name
+kind
+[les_1, les_2]
+find()
+}
+class SeminarBeforeLecture{
+}
+class ManyLecturesInOneDay{
+}
+class Expert{
+name
+load()
+handling()
+save()
+publish()
+}
+class Schedule{
+name
+year
+term
+load()
+find_ue()
+}
+class Lesson{
+week
+day
+pair
+kind
+number
+load()
+}
+class Teacher{
+name
+'e-mail
+}
+class Course{
+name
+'workload
+}
+'class Pair {
+'id
+'begin
+'finish
+'}
+'class Student{
+'id
+'e-mail
+'}
+class Group{
+name
+'students
+}
+'class Building {
+'name
+'}
+class Auditorium {
+name
+'address
+}
+class Theme{
+type
+number
+ac_hour
+}
+
+Expert -"*" Schedule
+Schedule -"*" Lesson
+UndesirableEffect "*"--Schedule
+Lesson  --"*"  Group
+SeminarBeforeLecture --|> UndesirableEffect
+Lesson --Teacher
+ManyLecturesInOneDay --|> UndesirableEffect
+Lesson --  Course
+Group "*"- Teacher
+'Pair "*"-- Schedule
+Course --"*" Theme
+Lesson - Auditorium
+Teacher "*"- Course
+'Building -- Auditorium
+'Building "2"-"1" Transfer
+'Group -"*" Student
+'Lesson --Transfer
+@enduml
+
+Смысл терминов:
+workload - нагрузка
+UndesirableEffect - Предупреждение
+Error – Ошибка
+Schedule - Расписание
+   term - семестр
+Lesson – Занятие
+   face-to-face - очное
+Pair -  Пара
+Group - Группа
+Student - Студент
+Building  - Корпус
+Auditorium - Аудитория
+Transfer  - Трансфер
+Route – маршрут
+Course - Рабочая программа
+Teacher - Преподаватель
+Expert - Эксперт
+    handling - обработка
+Route – маршрут
+
+
+
+
+
