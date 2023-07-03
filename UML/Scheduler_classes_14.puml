@@ -95,11 +95,11 @@ SeminarBeforeLecture --|> UndesirableEffect
 Lesson --Teacher
 ManyLecturesInOneDay --|> UndesirableEffect
 Lesson --  Course
-Group "*"- Teacher
+Teacher -"*" Group
 Pair "*"-- Lesson
 Course --"*" Theme
 Lesson - Auditorium
-Teacher "*"- Course
+Course -"*" Teacher
 'Building -- Auditorium
 'Building "2"-"1" Transfer
 'Group -"*" Student
