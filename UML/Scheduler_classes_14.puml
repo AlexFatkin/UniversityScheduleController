@@ -59,6 +59,8 @@ name
 }
 class Course{
 name
+lectures
+seminars
 'workload
 }
 class Pair {
@@ -72,6 +74,7 @@ class Pair {
 }
 class Group{
 name
+students
 'students
 }
 'class Building {
@@ -79,6 +82,7 @@ name
 '}
 class Auditorium {
 name
+students
 'address
 }
 class Theme{
