@@ -106,16 +106,14 @@ ac_hour
 Expert -"*" Schedule
 Schedule -"*" Lesson
 UndesirableEffect "*"--Schedule
-Schedule  --"*"  Group
 SeminarBeforeLecture --|> UndesirableEffect
-Schedule --Teacher
 ManyLecturesInOneDay --|> UndesirableEffect
-Schedule--  Course
-Teacher -"*" Group
+Schedule --"*" Course
+Group "*"-Teacher
 Pair "*"-- Lesson
 Course --"*" Theme
 Auditorium "*"- Expert
-Course -"*" Teacher
+Teacher "*"- Course
 Transfer "1"--"2" Building
 Building --"*" Auditorium
 'Group -"*" Student
