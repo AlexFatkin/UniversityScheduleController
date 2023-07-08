@@ -111,7 +111,7 @@ ManyLecturesInOneDay --|> UndesirableEffect
 Schedule --"*" Course
 Group "*"-Teacher
 Pair "*"-- Lesson
-Course --"*" Theme
+Course -"*" Theme
 Auditorium "*"- Expert
 Teacher "*"- Course
 Transfer "1"--"2" Building
