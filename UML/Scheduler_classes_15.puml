@@ -33,6 +33,8 @@ class ManyLecturesInOneDay{
 }
 class Expert{
 name
+teachers
+groups
 load()
 handling()
 save()
@@ -42,15 +44,21 @@ class Schedule{
 name
 year
 term
+weeks
+days
+pairs
 load()
 find_ue()
 }
 class Lesson{
-type
 week
 day
-'pair
-number
+pair
+type
+theme
+teacher
+groups
+auditorium
 load()
 }
 class Teacher{
@@ -73,13 +81,17 @@ finish
 'e-mail
 }
 class Group{
+beg_year
 name
 students
 'students
 }
-'class Building {
-'name
-'}
+class Transfer {
+name
+}
+class Building {
+name
+}
 class Auditorium {
 name
 students
@@ -94,20 +106,19 @@ ac_hour
 Expert -"*" Schedule
 Schedule -"*" Lesson
 UndesirableEffect "*"--Schedule
-Lesson  --"*"  Group
+Schedule  --"*"  Group
 SeminarBeforeLecture --|> UndesirableEffect
-Lesson --Teacher
+Schedule --Teacher
 ManyLecturesInOneDay --|> UndesirableEffect
-Lesson --  Course
+Schedule--  Course
 Teacher -"*" Group
 Pair "*"-- Lesson
 Course --"*" Theme
-Lesson - Auditorium
+Auditorium "*"- Expert
 Course -"*" Teacher
-'Building -- Auditorium
-'Building "2"-"1" Transfer
+Transfer "1"--"2" Building
+Building --"*" Auditorium
 'Group -"*" Student
-'Lesson --Transfer
 @enduml
 
 Смысл терминов:
@@ -130,8 +141,3 @@ Teacher - Преподаватель
 Expert - Эксперт
     handling - обработка
 Route – маршрут
-
-
-
-
-
