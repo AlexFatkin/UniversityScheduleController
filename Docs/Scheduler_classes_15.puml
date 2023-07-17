@@ -19,11 +19,12 @@ skinparam shadowing false
 'skinparam monochrome true
 skinparam packageStyle frame
 
-package Handler {
 
+package Handler {
+'note "Spread:\n Ask & Bid\n lots in deal" as spread
 class UndesirableEffect{
 name
-kind
+rating
 [les_1, les_2]
 find()
 }
@@ -31,10 +32,15 @@ class SeminarBeforeLecture{
 }
 class ManyLecturesInOneDay{
 }
-class Expert{
+class UeReport{
+desirability
+create()
+save()
+publish()
+}
+class University{
 name
-teachers
-groups
+create()
 load()
 handling()
 save()
@@ -43,26 +49,26 @@ publish()
 class Schedule{
 name
 year
-term
-weeks
-days
-pairs
+term_number
+week_numbers
+week_days
+pair_numbers
 load()
-find_ue()
+save()
 }
 class Lesson{
 week
 day
-pair
+'pair
 type
-theme
 teacher
 groups
 auditorium
-load()
 }
 class Teacher{
 name
+active
+kinds
 'e-mail
 }
 class Course{
@@ -83,17 +89,21 @@ finish
 class Group{
 beg_year
 name
+active
 students
 'students
 }
 class Transfer {
 name
+active
 }
 class Building {
 name
+active
 }
 class Auditorium {
 name
+active
 students
 'address
 }
@@ -103,16 +113,21 @@ number
 ac_hour
 }
 
-Expert -"*" Schedule
+University -"*" Schedule
 Schedule -"*" Lesson
-UndesirableEffect "*"--Schedule
+University --"*"Group
+University --"*" Teacher
+'UndesirableEffect "*"--Schedule
 SeminarBeforeLecture --|> UndesirableEffect
 ManyLecturesInOneDay --|> UndesirableEffect
+UeReport -- Schedule
+UndesirableEffect "*" - UeReport
 Schedule --"*" Course
 Group "*"-Teacher
+Lesson -- Theme
 Pair "*"-- Lesson
 Course -"*" Theme
-Auditorium "*"- Expert
+Auditorium "*"- University
 Teacher "*"- Course
 Transfer "1"--"2" Building
 Building --"*" Auditorium
@@ -136,6 +151,7 @@ Transfer  - Трансфер
 Route – маршрут
 Course - Рабочая программа
 Teacher - Преподаватель
-Expert - Эксперт
+    kinds - lector, assistant
+University - ВУЗ
     handling - обработка
 Route – маршрут
