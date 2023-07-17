@@ -143,39 +143,6 @@ def load_from_excel(table_name: str, sheet_name: str):
     return df
 
 
-class University:
-    def __init__(self):
-        self.name = "Almazov center"
-        self.table_name = None
-        self.file_path = None
-        self.pack_df = None
-
-    def create_objects(self):
-        pass
-
-    def load(self, file_path, table_name):
-        """Извлекаем данные из Excel таблицы и сохраняем в датафрейм"""
-        self.table_name = table_name
-        self.file_path = f'{file_path}{self.table_name}.xlsx'
-        self.pack_df = pd.read_excel(self.file_path, 'Лист1', index_col=0)
-        print(self.table_name)
-        print(self.pack_df)
-        return self.pack_df
-
-    def load_groups(self, file_path, table_name):
-        """Извлекаем данные из Excel таблицы и сохраняем в датафрейм"""
-        self.table_name = table_name
-        self.file_path = f'{file_path}{self.table_name}.xlsx'
-        self.pack_df = pd.read_excel(self.file_path, 'Лист1', index_col=0)
-        print(self.table_name)
-        print(self.pack_df)
-        return self.pack_df
-
-    def create(self):
-        """Создаем расписание"""
-        ...
-
-
 class Expert:
     """Эксперт по расписанию - создает расписания"""
 
@@ -275,6 +242,39 @@ class Expert:
     def publish(self):
         """Публикация"""
         pass
+
+
+class University:
+    def __init__(self):
+        self.name = "Almazov center"
+        self.table_name = None
+        self.file_path = None
+        self.pack_df = None
+
+    def create_objects(self):
+        pass
+
+    def load(self, file_path, table_name):
+        """Извлекаем данные из Excel таблицы и сохраняем в датафрейм"""
+        self.table_name = table_name
+        self.file_path = f'{file_path}{self.table_name}.xlsx'
+        self.pack_df = pd.read_excel(self.file_path, 'Лист1', index_col=0)
+        print(self.table_name)
+        print(self.pack_df)
+        return self.pack_df
+
+    def load_groups(self, file_path, table_name):
+        """Извлекаем данные из Excel таблицы и сохраняем в датафрейм"""
+        self.table_name = table_name
+        self.file_path = f'{file_path}{self.table_name}.xlsx'
+        self.pack_df = pd.read_excel(self.file_path, 'Лист1', index_col=0)
+        print(self.table_name)
+        print(self.pack_df)
+        return self.pack_df
+
+    def create(self):
+        """Создаем расписание"""
+        ...
 
 
 class Schedule:
@@ -435,9 +435,9 @@ def main_expert():
 
 
 def main_university():
-    university = University()  # Создаем Эксперта
+    university = University()  # Создаем Университет
     university.create_objects()
-    university.load(file_path='input/', table_name='Teachers')  # Эксперт загружает свернутую форму расписания
+    # university.load(file_path='input/', table_name='Teachers')  # Эксперт загружает свернутую форму расписания
     university.load(file_path='input/', table_name='Courses')  # Эксперт загружает свернутую форму расписания
 
 

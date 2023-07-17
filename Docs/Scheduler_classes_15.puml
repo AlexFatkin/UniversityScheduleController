@@ -32,12 +32,12 @@ class SeminarBeforeLecture{
 }
 class ManyLecturesInOneDay{
 }
-class UeReport{
-desirability
-create()
-save()
-publish()
-}
+'class UeReport{
+'desirability
+'create()
+'save()
+'publish()
+'}
 class University{
 name
 create()
@@ -67,15 +67,14 @@ auditorium
 }
 class Teacher{
 name
-active
-kinds
+types
+'active
 'e-mail
 }
 class Course{
 name
 lectures
 seminars
-'workload
 }
 class Pair {
 name
@@ -89,21 +88,21 @@ finish
 class Group{
 beg_year
 name
-active
+'active
 students
 'students
 }
 class Transfer {
 name
-active
+'active
 }
 class Building {
 name
-active
+'active
 }
 class Auditorium {
 name
-active
+'active
 students
 'address
 }
@@ -117,11 +116,11 @@ University -"*" Schedule
 Schedule -"*" Lesson
 University --"*"Group
 University --"*" Teacher
-'UndesirableEffect "*"--Schedule
+UndesirableEffect "*"--Schedule
 SeminarBeforeLecture --|> UndesirableEffect
 ManyLecturesInOneDay --|> UndesirableEffect
-UeReport -- Schedule
-UndesirableEffect "*" - UeReport
+'UeReport -- Schedule
+'UndesirableEffect "*" - UeReport
 Schedule --"*" Course
 Group "*"-Teacher
 Lesson -- Theme
