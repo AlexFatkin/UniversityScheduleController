@@ -1,10 +1,10 @@
 """
 @author: lataf
 @file: Helper_7.py
-@time: 10.07.2023 17:59
-Модуль отвечает за: Формирование расписания и поиск в нем нежелательных явлений
-Документация:
-UML схемы: Scheduler_classes_15.puml
+@time: 24.01.2023 17:59
+Модуль отвечает за предупреждения и ошибки при составлении расписания
+9. Буду строить Фабричный метод для Undesirable Effect (UE)
+UML схемы: Scheduler_classes_2.puml, Scheduler_usecase.puml
 Сценарий работы модуля:Scheduler_scenario_2.docx
 Тест модуля находится в папке tests.
 
@@ -52,7 +52,7 @@ class SeminarBeforeLecture(UndesirableEffect):
                 last_seminar_number = les.number  # то запоминаем его номер
             elif les.kind == Lesson.lecture and last_seminar_number >= les.number:  # и если номер лекции больше
                 # или равен номеру семинара, то
-                print(f"    Лекция №{les.number} позже Семинара №{last_seminar_number}"  # выводим предупреждение,
+                print(f"Лекция №{les.number} позже Семинара №{last_seminar_number}"  # выводим предупреждение,
                       f" в день {les.day} недели {les.week}")  # день и неделю
                 self.ue_count += 1
         if self.ue_count == 0:
@@ -84,9 +84,8 @@ class ManyLecturesInOneDay(UndesirableEffect):
 
                 self.day = les.day
             if self.lecture_pair > self.max_lecture_pair:  # Если число лекций в день больше установленного, то
-                print(
-                    f"    Лекций {self.lecture_pair} (больше, чем {self.max_lecture_pair}) "  # выводим предупреждение 
-                    f"в день {self.day} недели {self.week}")  # день и неделю
+                print(f"Лекций {self.lecture_pair} больше, чем {self.max_lecture_pair}) "  # выводим предупреждение, 
+                      f"в день {self.day} недели {self.week}")  # день и неделю
                 self.lecture_pair = 1  # Восстанавливаем начальное число счетчика лекций
                 self.ue_count += 1
         if self.ue_count == 0:
@@ -95,39 +94,30 @@ class ManyLecturesInOneDay(UndesirableEffect):
 
 class OneGroupInDiffPlaces(UndesirableEffect):
     def __init__(self):
-        super().__init__(name="Одна группа одновременно находится в двух разных местах", kind="Ошибка")
-        self.groups_name = None
-        self.ue_count = 0
+        super().__init__(name="Одна группа находится на двух разных парах", kind="Ошибка")
+        self.group = 0
+        self.teacher = 0
+        self.pair = 0
+        self.day = 0
         self.groups = []
 
     def find(self):
         print()
         print(f'{self._kind} : {self._name} ')
-        self.One_Group_In_Diff_Places_In_One_Time()
+        self.One_Group_In_Diff_Places()
 
-    def One_Group_In_Diff_Places_In_One_Time(self):
-        self.groups_name = {}
-        for i in range(0, len(self.schedule.lessons)):  # Отправляем на сравнение  по одному занятию мз расписания
-            for j in range(i, len(self.schedule.lessons)):  # по всем занятиям в расписании с без повторений
-                a = set(([g.name for g in self.schedule.lessons[i].groups]))
-                b = set(([g.name for g in self.schedule.lessons[j].groups]))
-                self.groups_name = a.intersection(b)
-                if (self.groups_name != set() and
-                        #  Если это пересечение не пустое
-                        (self.schedule.lessons[i].auditorium.name != self.schedule.lessons[j].auditorium.name) and
-                        #  м аудитории не совпадают
-                        (self.schedule.lessons[i].week == self.schedule.lessons[j].week) and
-                        # а неделя, день и пара занятий одинаковы
-                        (self.schedule.lessons[i].day == self.schedule.lessons[j].day) and
-                        (self.schedule.lessons[i].pair == self.schedule.lessons[j].pair)):
-                    self.ue_count += 1  # Увеличиваем Счетчик НЯ
-                    print(f"    Группа {self.groups_name}"
-                          f" одновременно w{self.schedule.lessons[i].week}d{self.schedule.lessons[i].day}"
-                          f"p{self.schedule.lessons[i].pair}"
-                          f" находится в {self.schedule.lessons[i].auditorium.name} и "
-                          f"{self.schedule.lessons[j].auditorium.name}")
-                # ищем пересечение имен по двум группам
-        if self.ue_count == 0:  # Счетчик ошибок
+    def One_Group_In_Diff_Places(self):
+        for les in self.schedule.lessons:
+            if self.teacher == les.teacher and self.group == les.group and\
+                    self.pair == les.pair and (self.day == les.day):
+                print(f"Группа {self.group} находится в двух разных местах")
+                self.ue_count += 1
+            self.group = les.group
+            self.groups = []
+            self.teacher = les.teacher
+            self.pair = les.pair
+            self.day = les.day
+        if self.ue_count == 0:
             print(f'Всё в порядке. {self._kind} не выявлена')
 
 
@@ -138,9 +128,7 @@ def save_in_excel(df_restructured, table_name, sheet_name):
 
 def load_from_excel(table_name: str, sheet_name: str):
     """Загружаем данные из таблицы excel в датафрейм"""
-    df = pd.read_excel(table_name, sheet_name, header=0, converters={'week': str, 'group': str}, index_col=0)
-    # Загружаем данные из таблицы excel в датафрейм
-    return df
+    return pd.read_excel(table_name, sheet_name, index_col=0)  # Загружаем данные из таблицы excel в датафрейм
 
 
 class Expert:
@@ -186,7 +174,7 @@ class Expert:
         # self.unpack_df = pd.DataFrame()
         # for h in range(0, len(self.pack_df)):
         #     d = self.pack_df.iloc[h]
-        #     for g in str(d['group']).split(sep=','):
+        #     for g in str(d['group']).split(sep=', '):
         #         d['group'] = g
         #         self.unpack_df = pd.concat([self.unpack_df, d.to_frame().T])
         # self.unpack_df = self.unpack_df.reindex(columns=['#'] + list(self.unpack_df.columns))  # Переносим # вперед
@@ -194,14 +182,13 @@ class Expert:
         self.unpack_df = self.unpack_df.sort_values(by=['week', 'day', 'pair'],
                                                     ascending=[True, True, True], na_position='first')
         self.unpack_df.index = list(range(1, len(self.unpack_df) + 1))  # Создаем новый индекс занятий без повторений
-        # print()
-        # print('Развернутая свертка')
-        # print(self.unpack_df)
+        print()
+        print('Развернутая свертка')
+        print(self.unpack_df)
         return self.unpack_df
 
     def create_schedule(self):
         self.schedule = Schedule(name=self.table_name, year=2022, term=1)
-        # self.schedule.lessons.append(Teacher())
         for id in self.unpack_df.index:
             self.schedule.lessons.append(Lesson(id=id,
                                                 week=self.unpack_df.at[id, 'week'],
@@ -244,61 +231,21 @@ class Expert:
         pass
 
 
-class University:
-    def __init__(self):
-        self.name = "Almazov center"
-        self.table_name = None
-        self.file_path = None
-        self.pack_df = None
-
-    def create_objects(self):
-        pass
-
-    def load(self, file_path, table_name) -> pd.DataFrame:
-        """Извлекаем данные из Excel таблицы и сохраняем в датафрейм"""
-        self.table_name = table_name
-        self.file_path = f'{file_path}{self.table_name}.xlsx'
-        self.pack_df = pd.read_excel(self.file_path, 'Лист1', index_col=0)
-        print(self.table_name)
-        print(self.pack_df)
-        return self.pack_df
-
-    def load_groups(self, file_path, table_name):
-        """Извлекаем данные из Excel таблицы и сохраняем в датафрейм"""
-        self.table_name = table_name
-        self.file_path = f'{file_path}{self.table_name}.xlsx'
-        self.pack_df = pd.read_excel(self.file_path, 'Лист1', index_col=0)
-        print(self.table_name)
-        print(self.pack_df)
-        return self.pack_df
-
-    def create(self):
-        """Создаем расписание"""
-        ...
-
-
 class Schedule:
     """Расписание - загрузка объектов в расписание"""
 
-    def __init__(self, name: str, year: int, term: int) -> None:
-        self.university = None  # Ссылка на родителя
-        self.name = None  # Имя расписания
-        self.year = year
-        self.term_number = term
-        self.week_numbers = range(1, 18)
-        self.week_days = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс']
-        self.pair_numbers = range(1, 7)
-        self.lesson = None
+    def __init__(self, name, year, term):
         self.undesirable_effect_list = []
-        self.lessons = []
-        # self.lessons: [Lesson] = []
         self.file_path = ''
         self.table_name = name
+        self.year = year
+        self.term = term
         self.df = None
         self.unpack_df = None
+        self.lessons = []
         self.schedule_df = pd.DataFrame(columns=['group', 'week', 'day', 'pair', 'lesson', 'discipline',
                                                  'teacher', 'building', 'auditory'])
-        self.schedule_df_2 = pd.DataFrame(columns=['name', 'year', 'term'])
+        self.id = id  # Номер расписания
         self.name = 'без ошибок'
         self.year = 0  # Год расписания
         self.term = 0  # Семестр расписания
@@ -307,16 +254,6 @@ class Schedule:
         """Переопределение вывода на печать"""
         title = f'Файл {self.name}  Год {self.year} Семестр {self.term}'
         return title
-
-    def create_objects(self):
-        """Создает набор объектов schedule"""
-        ...
-        # self.lesson = Lesson()
-        # self.lesson.schedule = self
-        # for rd_par in self.lessons:  # Создаем набор объектов lessons
-        # for sm_par in self.smoothes:
-        #     handler = Handler(rd_par, sm_par, self)
-        #     self.handlers.append(handler)  # корреляция, сглаживание, ссылка на родителя
 
     def load_df_from_excel(self, file_path, table_name):
         """Извлекаем данные из Excel таблицы и сохраняем в датафрейм"""
@@ -328,9 +265,9 @@ class Schedule:
 
     def create_ue_objects(self):
         """Создает набор объектов нежелательных явлений"""
-        self.undesirable_effect_list.append(OneGroupInDiffPlaces())
         self.undesirable_effect_list.append(SeminarBeforeLecture())
         self.undesirable_effect_list.append(ManyLecturesInOneDay())
+        self.undesirable_effect_list.append(OneGroupInDiffPlaces())
 
     def unpack(self):
         """Распаковка свертки"""
@@ -361,7 +298,6 @@ class Lesson:
     seminar = "Семинар"
 
     def __init__(self, id, week, day, pair, kind, number):  #
-        self.schedule = None  # Ссылка на родителя
         self.id = id  # Код занятия
         self.week = week  # Неделя
         self.day = day  # День недели
@@ -370,7 +306,6 @@ class Lesson:
         self.number = number  # Порядковый номер занятия в дисциплине
         self.discipline = Discipline()  # Дисциплина
         self.teacher = Teacher()  # Преподаватель
-        self.groups = []  # Группы занятые в занятии
         self.auditorium = Auditorium()  # Аудитория
         self.group = Group()  # Группа
         self.groups = []  # Группы
@@ -427,20 +362,8 @@ class Group:
         return f'{self.name}'
 
 
-def main_expert():
+if __name__ == '__main__':
     expert = Expert()  # Создаем Эксперта
-    expert.load(file_path='input/', table_name='Расписание №14 Form')  # Эксперт загружает свернутую форму расписания
+    expert.load(file_path='input/', table_name='Расписание №1 Form')  # Эксперт загружает свернутую форму расписания
     expert.schedule.create_ue_objects()  # и список объектов НЯ
     expert.handling()  # Эксперт запускает обработку распакованного расписания объектами НЯ
-
-
-def main_university():
-    university = University()  # Создаем Университет
-    university.create_objects()
-    # university.load(file_path='input/', table_name='Teachers')  # Эксперт загружает свернутую форму расписания
-    university.load(file_path='input/', table_name='Courses')  # Эксперт загружает свернутую форму расписания
-
-
-if __name__ == '__main__':
-    # main_expert()
-    main_university()

@@ -4,4 +4,7 @@
   <component name="PythonCompatibilityInspectionAdvertiser">
     <option name="version" value="3" />
   </component>
+  <component name="SltLispProjectSdk">
+    <option name="currentSDK" value="51ebcb4a81d74002b04b33484281e3a1" />
+  </component>
 </project>
